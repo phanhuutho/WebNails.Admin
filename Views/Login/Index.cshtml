@@ -1,0 +1,180 @@
+﻿@model WebNails.Admin.Models.LoginModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Đăng nhập</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- Custom CSS -->
+    <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
+    <!-- Custom Fonts -->
+    <link href="~/Content/font-awesome/font-awesome.css" rel="stylesheet" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- jQuery -->
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <style type="text/css">
+        body {
+            height: 900px;
+            display: flex;
+            align-items: center;
+        }
+        .container{
+            width: 100%;
+        }
+        input[type="radio"], input[type="checkbox"] {
+            margin: 0px -2px 0px -2px;
+        }
+
+        label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        .text-left {
+            text-align: left !important;
+        }
+
+        .input-group-addon input[type="checkbox"] {
+            margin-top: 3px;
+        }
+
+        .input-group-addon:first-child {
+            min-width: 40px;
+        }
+    </style>
+</head>
+<body id="body" oncontextmenu="return false" onselectstart="return true" ondragstart="return true">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Đăng nhập hệ thống quản lý</h3>
+                    </div>
+                    <div class="panel-body">
+                        @using (Html.BeginForm("Index", "Login", FormMethod.Post, new { @id = "formLogin", @action = "" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <fieldset>
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user" aria-hidden="false"></i></span>
+                                    @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", @placeholder = "Tài khoản" } })
+                                </div>
+
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><i class="fa fa-lock" aria-hidden="false"></i></span>
+                                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mật khẩu" } })
+                                </div>
+
+                                <!-- Change this to a button or input when using this as a form -->
+                                <button type="submit" class="btn btn-danger pull-right">Đăng nhập</button>
+
+                                <div class="form-group">
+                                    <label id="Username-error" class="error" for="Username"></label>
+                                    <label id="Password-error" class="error" for="Password"></label>
+                                    @Html.ValidationMessageFor(model => model.Username)
+                                    @Html.ValidationMessageFor(model => model.Password)
+                                </div>
+                            </fieldset>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fixed-bottom">
+        <div class="navbar navbar-default">
+            <h4 class="text-center">
+                <span>Copyright &copy; Phan Thọ (Developer) - @DateTime.Now.Year</span>
+            </h4>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h5 class="modal-title" id="myModalLabel">Thông báo</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="alert-message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+
+    <script type="text/javascript">
+
+        function AlertMessage(strMessage) {
+            $('#alert-message').html("");
+            $('#alert-message').html(strMessage);
+            $('#myModalMessage').modal("show");
+        }
+
+        function RedirecToUrl(strURL) {
+            location.href = strURL;
+        }
+
+        $(document).keydown(function (event) {
+            if (event.keyCode == 123) { // Prevent F12
+                return false;
+            } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) { // Prevent Ctrl+Shift+I
+                return false;
+            }
+        });
+
+        $(document).ready(function () {
+            $("#formLogin").validate({
+                rules: {
+                    Username: "required",
+                    Password: "required"
+                },
+                messages: {
+                    Username: { required: "Nhập tài khoản đăng nhập" },
+                    Password: { required: "Nhập mật khẩu" }
+                },
+                submitHandler: function (form) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Login/Index",
+                        data: $(form).serialize(),
+                        success: function (result) {
+                            if (result.IsLogin == false) {
+                                AlertMessage(result.Message);
+                            }
+                            else {
+                                RedirecToUrl(result.ReturnUrl);
+                            }
+                        },
+                    });
+                    return false;
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
