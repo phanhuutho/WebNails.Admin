@@ -49,6 +49,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\CKFinder.dll</HintPath>
     </Reference>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Dapper.2.0.123\lib\net461\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -130,7 +133,17 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\JsonInfo.cs" />
+    <Compile Include="Models\JsonCoupon.cs" />
+    <Compile Include="Models\JsonPrice.cs" />
+    <Compile Include="Models\JsonSocial.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\Nail.cs" />
+    <Compile Include="Models\NailAccount.cs" />
+    <Compile Include="Models\NailCoupon.cs" />
+    <Compile Include="Models\NailPrices.cs" />
+    <Compile Include="Models\NailSocial.cs" />
+    <Compile Include="Models\Social.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\MailHelper.cs" />
     <Compile Include="Utilities\PagingHelper.cs" />
@@ -1265,9 +1278,9 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
+    <None Include="Scripts\jquery\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <None Include="Scripts\jquery\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery\jquery.js" />
