@@ -8,7 +8,7 @@ namespace WebNails.Admin.Controllers
 {
     public class ControlPanelController : Controller
     {
-        // GET: administrator/ControlPanel
+        [Authorize]
         public ActionResult Index()
         {
             return View();

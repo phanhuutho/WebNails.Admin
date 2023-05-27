@@ -12,5 +12,7 @@ namespace WebNails.Admin.Models
 
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public string Code { get; set; }
+        public string ValidationCode { get; set; }
     }
 }

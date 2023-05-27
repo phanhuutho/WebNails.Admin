@@ -146,6 +146,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IConnection.cs" />
+    <Compile Include="Interfaces\INailAccountRepository.cs" />
     <Compile Include="Models\JsonInfo.cs" />
     <Compile Include="Models\JsonCoupon.cs" />
     <Compile Include="Models\JsonPrice.cs" />
@@ -158,6 +160,8 @@
     <Compile Include="Models\NailSocial.cs" />
     <Compile Include="Models\Social.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\NailAccountRepository.cs" />
+    <Compile Include="Utilities\Commons.cs" />
     <Compile Include="Utilities\MailHelper.cs" />
     <Compile Include="Utilities\PagingHelper.cs" />
     <Compile Include="Utilities\Sercurity.cs" />
@@ -1332,6 +1336,7 @@
     <Content Include="Scripts\jquery\jquery-1.10.2.min.map" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\ControlPanel\Index.cshtml" />
+    <Content Include="Views\Login\ConfirmLoginByCode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

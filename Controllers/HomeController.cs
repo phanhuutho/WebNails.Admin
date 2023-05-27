@@ -8,6 +8,7 @@ namespace WebNails.Admin.Controllers
 {
     public class HomeController : Controller
     {
+        [Authorize]
         public ActionResult Index()
         {
             return RedirectToAction("Index", "ControlPanel");
