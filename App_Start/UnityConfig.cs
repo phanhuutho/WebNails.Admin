@@ -17,6 +17,7 @@ namespace WebNails.Admin
 
             // e.g. container.RegisterType<ITestService, TestService>();
             container.RegisterType<INailAccountRepository, NailAccountRepository>();
+            container.RegisterType<INailRepository, NailRepository>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }
     }

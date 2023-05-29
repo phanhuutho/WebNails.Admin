@@ -1,0 +1,111 @@
+﻿@model IEnumerable<WebNails.Admin.Models.Nail>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Danh sách Domain Nail";
+
+    var indexCurrent = WebNails.Admin.Utilities.PagingHelper.CurrentIndex(WebNails.Admin.Utilities.PagingHelper.CountSort, WebNails.Admin.Utilities.PagingHelper.PageIndex);
+
+    var strQuery = Request.Url.Query;
+    var queryDictionary = HttpUtility.ParseQueryString(strQuery);
+
+    var strSearch = "";
+
+    if (queryDictionary.Count > 0)
+    {
+        strSearch = queryDictionary.Get("Search");
+    }
+}
+
+@using (Html.BeginForm("Index", "Nail", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-md-9">
+            <div class="form-group">
+                <label for="Title">Tìm kiếm</label>
+                <input class="form-control text-box single-line" id="Search" name="Search" type="text" value="">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group text-right">
+                <label>&nbsp;</label><br />
+                <input type="submit" class="btn btn-primary" value="Search" />
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h5>Danh sách Domain Nail</h5>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <a class="btn btn-default" href="/Category/create">Thêm mới</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive table-primary">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Name</th>
+                                        <th>Domain Nail</th>
+                                        <th>Address</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@indexCurrent</td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Domain)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Address)
+                                            </td>
+                                            <td>
+                                                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.ID }, htmlAttributes: new { @class = "btn btn-danger btn-xs" })
+                                            </td>
+                                        </tr>
+                                        indexCurrent++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 text-left">
+                        @Html.Raw(WebNails.Admin.Utilities.PagingHelper.Page(ViewBag.Count, 5, WebNails.Admin.Utilities.PagingHelper.CountSort, "pagination"))
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#Search").val("@strSearch");
+        });
+
+    </script>
+}
