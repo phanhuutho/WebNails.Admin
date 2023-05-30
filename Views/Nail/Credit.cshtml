@@ -1,0 +1,147 @@
+﻿@model WebNails.Admin.Models.Nail
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = $"{(Model.ID == 0 ? "Thêm" : "Sửa")} thông tin Nail " + Model.Name;
+}
+
+@section css{
+    <script src="~/Plugins/ckeditor/ckeditor.js"></script>
+    <script src="~/Plugins/ckfinder/ckfinder.js"></script>
+    <script src="~/Scripts/common.js"></script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h5>@($"{(Model.ID == 0 ? "Thêm" : "Sửa")} thông tin Nail" + Model.Name)</h5>
+            </div>
+            <div class="panel-body">
+                <form id="myForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.Label("Domain", "Domain")
+                                @Html.EditorFor(model => model.Domain, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Domain, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Name", "Tên tiệm Nail")
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Address", "Địa chỉ tiệm Nail")
+                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("HyperLinkTell", "Đường dẫn tích hợp call trên web (format: tel:(xxx)xxxxxxx)")
+                                @Html.EditorFor(model => model.HyperLinkTell, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.HyperLinkTell, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("TextTell", "Số điện thoại tiệm Nail")
+                                @Html.EditorFor(model => model.TextTell, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.TextTell, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Coupons", "Bật/Tắt popup Coupon trên web")
+                                @Html.CheckBoxFor(model => model.Coupons, new { @class = "checkbox-inline" })
+                                @Html.ValidationMessageFor(model => model.Coupons, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Logo", "Logo tiệm nail")
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.Logo, new { htmlAttributes = new { @class = "form-control" } })
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-info" id="btnLogo" onclick="ButtonImageClick('Logo')"><i class="fa fa-picture-o"></i></button>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Logo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.Label("GooglePlus", "URL tìm kiếm tiệm Nail trên Google")
+                                @Html.EditorFor(model => model.GooglePlus, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.GooglePlus, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("LinkGoogleMapAddress", "URL Google Map tiệm Nail")
+                                @Html.EditorFor(model => model.LinkGoogleMapAddress, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.LinkGoogleMapAddress, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("LinkIFrameGoogleMap", "URL bản đồ tiệm Nail hiển thị trên web")
+                                @Html.EditorFor(model => model.LinkIFrameGoogleMap, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.LinkIFrameGoogleMap, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("LinkBookingAppointment", "URL Booking Appointment")
+                                @Html.EditorFor(model => model.LinkBookingAppointment, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.LinkBookingAppointment, "", new { @class = "text-danger" })
+                            </div>
+                            <button type="submit" id="btnSubmit" class="btn btn-danger pull-right">Cập nhật</button>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/jquery/jquery.validate.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#myForm").validate({
+                rules: {
+                    Domain: "required",
+                    Name: "required",
+                    Address: "required",
+                    HyperLinkTell: "required",
+                    TextTell: "required",
+                    Logo: "required",
+                    GooglePlus: "required",
+                    LinkGoogleMapAddress: "required",
+                    LinkIFrameGoogleMap: "required"
+                },
+                messages: {
+                    Domain: { required: "Nhập Domain tiệm Nail" },
+                    Name: { required: "Nhập tên tiệm Nail" },
+                    Address: { required: "Nhập địa chỉ tiệm Nail" },
+                    HyperLinkTell: { required: "Nhập đường dẫn tích hợp call trên web" },
+                    TextTell: { required: "Nhập số điện thoại tiệm Nail" },
+                    Logo: { required: "Nhập Logo tiệm Nail" },
+                    GooglePlus: { required: "Nhập URL tìm kiếm tiệm Nail trên Google" },
+                    LinkGoogleMapAddress: { required: "Nhập URL Google Map tiệm Nail" },
+                    LinkIFrameGoogleMap: { required: "Nhập URL bản đồ tiệm Nail hiển thị trên web" }
+                },
+                submitHandler: function (form) {
+                    let overlay = new ItpOverlay();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Nail/Credit",
+                        data: $(form).serialize(),
+                        beforeSend: function () {
+                            overlay.show("body");
+                        },
+                        success: function (result) {
+                            AlertMessage(result);
+                        },
+                        complete: function (data) {
+                            overlay.hide("body");
+                        }
+                    });
+                    return false;
+                }
+            });
+        });
+
+    </script>
+}

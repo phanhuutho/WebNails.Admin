@@ -44,7 +44,7 @@
                         <h5>Danh sách Domain Nail</h5>
                     </div>
                     <div class="col-xs-6 text-right">
-                        <a class="btn btn-default" href="/Category/create">Thêm mới</a>
+                        <a class="btn btn-default" href="/Nail/Credit">Thêm mới</a>
                     </div>
                 </div>
 
@@ -78,7 +78,8 @@
                                                 @Html.DisplayFor(modelItem => item.Address)
                                             </td>
                                             <td>
-                                                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.ID }, htmlAttributes: new { @class = "btn btn-danger btn-xs" })
+                                                @Html.ActionLink("Chỉnh sửa", "Credit", new { ID = item.ID }, htmlAttributes: new { @class = "btn btn-danger btn-xs" })
+                                                @Html.ActionLink("Coupons", "Coupons", new { Nail_ID = item.ID }, htmlAttributes: new { @class = "btn btn-success btn-xs" })
                                             </td>
                                         </tr>
                                         indexCurrent++;

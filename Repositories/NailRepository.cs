@@ -31,5 +31,25 @@ namespace WebNails.Admin.Repositories
             this._sqlConnection = sqlConnection;
         }
 
+        public int SaveChange(Nail item)
+        {
+            var intCount = _sqlConnection.Execute(@"spNail_Credit",
+                    new
+                    {
+                        intID = item.ID,
+                        strDomain = item.Domain,
+                        strLogo = item.Logo,
+                        strName = item.Name,
+                        strAddress = item.Address,
+                        strHyperLinkTell = item.HyperLinkTell,
+                        strTextTell = item.TextTell,
+                        strGooglePlus = item.GooglePlus,
+                        strLinkGoogleMapAddress = item.LinkGoogleMapAddress,
+                        strLinkIFrameGoogleMap = item.LinkIFrameGoogleMap,
+                        strLinkBookingAppointment = item.LinkBookingAppointment,
+                        bitCoupons = item.Coupons
+                    }, commandType: CommandType.StoredProcedure);
+            return intCount;
+        }
     }
 }

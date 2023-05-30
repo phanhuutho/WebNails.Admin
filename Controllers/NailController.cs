@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using WebNails.Admin.Interfaces;
+using WebNails.Admin.Models;
 
 namespace WebNails.Admin.Controllers
 {
@@ -40,6 +41,45 @@ namespace WebNails.Admin.Controllers
                 ViewBag.Count = param.Get<int>("@intTotalRecord");
 
                 return View(objResult);
+            }    
+        }
+
+        [Authorize]
+        public ActionResult Credit(int ID = 0)
+        {
+            if(ID == 0)
+            {
+                Session["Cur_Domain"] = "Temp";
+                return View(new Nail() { ID = 0, Name = "" });
+            }
+            else
+            {
+                using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+                {
+                    _nailRepository.InitConnection(sqlConnect);
+                    var objNail = _nailRepository.GetNailByID(ID);
+                    Session["Cur_Domain"] = objNail.Domain;
+                    return View(objNail);
+                }
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Credit(Nail item)
+        {
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+            {
+                _nailRepository.InitConnection(sqlConnect);
+                var intCount = _nailRepository.SaveChange(item);
+                if (intCount == 1)
+                {
+                    return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name + " thành công", JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name + " thất bại", JsonRequestBehavior.AllowGet);
+                }
             }    
         }
     }

@@ -1341,6 +1341,7 @@
     <Content Include="Views\ControlPanel\Index.cshtml" />
     <Content Include="Views\Login\ConfirmLoginByCode.cshtml" />
     <Content Include="Views\Nail\Index.cshtml" />
+    <Content Include="Views\Nail\Credit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
