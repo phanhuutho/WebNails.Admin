@@ -78,8 +78,10 @@
                                                 @Html.DisplayFor(modelItem => item.Address)
                                             </td>
                                             <td>
-                                                @Html.ActionLink("Chỉnh sửa", "Credit", new { ID = item.ID }, htmlAttributes: new { @class = "btn btn-danger btn-xs" })
-                                                @Html.ActionLink("Coupons", "Coupons", new { Nail_ID = item.ID }, htmlAttributes: new { @class = "btn btn-success btn-xs" })
+                                                @Html.ActionLink("Chỉnh sửa thông tin", "Credit", new { ID = item.ID }, htmlAttributes: new { @class = "btn btn-danger btn-xs" })
+                                                @Html.ActionLink("Coupon", "Index", "Coupon", new { Nail_ID = item.ID }, htmlAttributes: new { @class = "btn btn-success btn-xs" })
+                                                @Html.ActionLink("Social", "Index", "Social", new { Nail_ID = item.ID }, htmlAttributes: new { @class = "btn btn-primary btn-xs" })
+                                                @Html.ActionLink("Prices", "Index", "Prices", new { Nail_ID = item.ID }, htmlAttributes: new { @class = "btn btn-warning btn-xs" })
                                             </td>
                                         </tr>
                                         indexCurrent++;

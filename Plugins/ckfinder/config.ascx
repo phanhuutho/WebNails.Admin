@@ -31,11 +31,11 @@
         LicenseKey = "";
 
         string strVirtualPath = string.Format(ConfigurationManager.AppSettings["VirtualUpload"], Session["Cur_Domain"]);
-        //string strVirtualPublish = ConfigurationManager.AppSettings["VirtualPublish"];
+        string strVirtualPublish = string.Format(ConfigurationManager.AppSettings["VirtualPublish"], Session["Cur_Domain"]);
 
         // The base URL used to reach files in CKFinder through the browser.
-        BaseUrl = "~/Uploads/";
-        //BaseUrl = strVirtualPublish;
+        //BaseUrl = "~/Uploads/";
+        BaseUrl = strVirtualPublish;
 
         // The phisical directory in the server where the file will end up. If
         // blank, CKFinder attempts to resolve BaseUrl.

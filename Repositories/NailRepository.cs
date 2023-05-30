@@ -47,7 +47,10 @@ namespace WebNails.Admin.Repositories
                         strLinkGoogleMapAddress = item.LinkGoogleMapAddress,
                         strLinkIFrameGoogleMap = item.LinkIFrameGoogleMap,
                         strLinkBookingAppointment = item.LinkBookingAppointment,
-                        bitCoupons = item.Coupons
+                        bitCoupons = item.Coupons,
+                        strAboutUs = item.AboutUs,
+                        strAboutUsHome = item.AboutUsHome,
+                        strBusinessHours = item.BusinessHours
                     }, commandType: CommandType.StoredProcedure);
             return intCount;
         }

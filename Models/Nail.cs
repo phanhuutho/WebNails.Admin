@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -20,5 +21,11 @@ namespace WebNails.Admin.Models
         public string LinkIFrameGoogleMap { get; set; }
         public string LinkBookingAppointment { get; set; }
         public bool Coupons { get; set; }
+        [DataType(DataType.MultilineText)]
+        public string AboutUs { get; set; }
+        [DataType(DataType.MultilineText)]
+        public string AboutUsHome { get; set; }
+        [DataType(DataType.MultilineText)]
+        public string BusinessHours { get; set; }
     }
 }

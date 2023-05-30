@@ -19,6 +19,7 @@
             </div>
             <div class="panel-body">
                 <form id="myForm">
+                    @Html.HiddenFor(model => model.ID)
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -61,8 +62,6 @@
                                 </div>
                                 @Html.ValidationMessageFor(model => model.Logo, "", new { @class = "text-danger" })
                             </div>
-                        </div>
-                        <div class="col-md-6">
                             <div class="form-group">
                                 @Html.Label("GooglePlus", "URL tìm kiếm tiệm Nail trên Google")
                                 @Html.EditorFor(model => model.GooglePlus, new { htmlAttributes = new { @class = "form-control" } })
@@ -83,7 +82,34 @@
                                 @Html.EditorFor(model => model.LinkBookingAppointment, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(model => model.LinkBookingAppointment, "", new { @class = "text-danger" })
                             </div>
-                            <button type="submit" id="btnSubmit" class="btn btn-danger pull-right">Cập nhật</button>
+                            <div class="form-group pull-right">
+                                <button type="button" id="btnCancel" class="btn btn-default">Trở về</button>
+                                <span>&nbsp;</span>
+                                <button type="submit" id="btnSubmit" class="btn btn-danger">Cập nhật</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.Label("BusinessHours", "Business Hours")
+                                @Html.EditorFor(model => model.BusinessHours, new { htmlAttributes = new { @class = "form-control" } })
+                                <script type="text/javascript">
+                                    SetupEditor('BusinessHours');
+                                </script>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("AboutUsHome", "Nội dung About Us trang Home")
+                                @Html.EditorFor(model => model.AboutUsHome, new { htmlAttributes = new { @class = "form-control" } })
+                                <script type="text/javascript">
+                                    SetupEditor('AboutUsHome');
+                                </script>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("AboutUs", "Nội dung trang About Us")
+                                @Html.EditorFor(model => model.AboutUs, new { htmlAttributes = new { @class = "form-control" } })
+                                <script type="text/javascript">
+                                    SetupEditor('AboutUs');
+                                </script>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -100,16 +126,32 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("#myForm").validate({
+                ignore: [],
+                debug: false,
                 rules: {
                     Domain: "required",
                     Name: "required",
                     Address: "required",
                     HyperLinkTell: "required",
                     TextTell: "required",
-                    Logo: "required",
                     GooglePlus: "required",
                     LinkGoogleMapAddress: "required",
-                    LinkIFrameGoogleMap: "required"
+                    LinkIFrameGoogleMap: "required",
+                    BusinessHours: {
+                        required: function () {
+                            CKEDITOR.instances.BusinessHours.updateElement();
+                        }
+                    },
+                    AboutUsHome: {
+                        required: function () {
+                            CKEDITOR.instances.AboutUsHome.updateElement();
+                        }
+                    },
+                    AboutUs: {
+                        required: function () {
+                            CKEDITOR.instances.AboutUs.updateElement();
+                        }
+                    }
                 },
                 messages: {
                     Domain: { required: "Nhập Domain tiệm Nail" },
@@ -117,17 +159,26 @@
                     Address: { required: "Nhập địa chỉ tiệm Nail" },
                     HyperLinkTell: { required: "Nhập đường dẫn tích hợp call trên web" },
                     TextTell: { required: "Nhập số điện thoại tiệm Nail" },
-                    Logo: { required: "Nhập Logo tiệm Nail" },
                     GooglePlus: { required: "Nhập URL tìm kiếm tiệm Nail trên Google" },
                     LinkGoogleMapAddress: { required: "Nhập URL Google Map tiệm Nail" },
-                    LinkIFrameGoogleMap: { required: "Nhập URL bản đồ tiệm Nail hiển thị trên web" }
-                },
-                submitHandler: function (form) {
+                    LinkIFrameGoogleMap: { required: "Nhập URL bản đồ tiệm Nail hiển thị trên web" },
+                    BusinessHours: { required: "Nhập Business Hours" },
+                    AboutUsHome: { required: "Nhập nội dung About Us trang Home" },
+                    AboutUs: { required: "Nhập nội dung trang About Us" }
+                }
+            });
+
+            $("#btnSubmit").on("click", function () {
+                CKUpdateForm();
+            });
+
+            $("#myForm").submit(function () {
+                if ($(this).valid()) {
                     let overlay = new ItpOverlay();
                     $.ajax({
                         type: "POST",
                         url: "/Nail/Credit",
-                        data: $(form).serialize(),
+                        data: $(this).serialize(),
                         beforeSend: function () {
                             overlay.show("body");
                         },
@@ -138,8 +189,12 @@
                             overlay.hide("body");
                         }
                     });
-                    return false;
                 }
+                return false;
+            });
+
+            $("#btnCancel").on("click", function () {
+                window.history.back();
             });
         });
 

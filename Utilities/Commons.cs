@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Web;
+using WebNails.Admin.Models;
 
 namespace WebNails.Admin.Utilities
 {
@@ -17,6 +21,25 @@ namespace WebNails.Admin.Utilities
             }
             string result = generator.Next(0, 1000000).ToString("D" + length);
             return result;
+        }
+
+        public static void GenerateDataWeb(JsonInfo jsonInfo, string txtBusinessHours, string txtAboutUs, string txtAboutUsHome)
+        {
+            //VirtualData
+            string path = string.Format(ConfigurationManager.AppSettings["VirtualData"], HttpContext.Current.Session["Cur_Domain"]);
+
+            //Write Business Hours
+            File.WriteAllText(path + "business-hours.txt", txtBusinessHours);
+
+            //Write About Us
+            File.WriteAllText(path + "about-us.txt", txtAboutUs);
+
+            //Write About Us Home
+            File.WriteAllText(path + "home-about-us.txt", txtAboutUsHome);
+
+            //Write info.json
+            string json = JsonConvert.SerializeObject(jsonInfo);
+            File.WriteAllText(path + "info.json", json);
         }
     }
 }

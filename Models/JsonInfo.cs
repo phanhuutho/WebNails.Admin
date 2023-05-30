@@ -18,7 +18,7 @@ namespace WebNails.Admin.Models
         public string LinkIFrameGoogleMap { get; set; }
         public bool ShowCoupon { get; set; }
         public List<JsonCoupon> Coupons { get; set; }
-        public List<JsonCoupon> Prices { get; set; }
+        public List<JsonPrice> Prices { get; set; }
         public JsonSocial Telegram { get; set; }
         public JsonSocial Facebook { get; set; }
         public JsonSocial Instagram { get; set; }

@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using WebNails.Admin.Interfaces;
 using WebNails.Admin.Models;
+using WebNails.Admin.Utilities;
 
 namespace WebNails.Admin.Controllers
 {
@@ -66,6 +67,7 @@ namespace WebNails.Admin.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult Credit(Nail item)
         {
             using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
@@ -74,6 +76,28 @@ namespace WebNails.Admin.Controllers
                 var intCount = _nailRepository.SaveChange(item);
                 if (intCount == 1)
                 {
+                    var jsonInfo = new JsonInfo
+                    {
+                        Name = item.Name,
+                        Logo = item.Logo,
+                        HyperLinkTell = item.HyperLinkTell,
+                        TextTell = item.TextTell,
+                        LinkBookingAppointment = item.LinkBookingAppointment,
+                        GooglePlus = item.GooglePlus,
+                        Address = item.Address,
+                        LinkGoogleMapAddress = item.LinkGoogleMapAddress,
+                        LinkIFrameGoogleMap = item.LinkIFrameGoogleMap,
+                        ShowCoupon = item.Coupons,
+                        Coupons = new List<JsonCoupon>(),
+                        Prices = new List<JsonPrice>(),
+                        Telegram = new JsonSocial(),
+                        Facebook = new JsonSocial(),
+                        Instagram = new JsonSocial(),
+                        Twitter = new JsonSocial(),
+                        Youtube = new JsonSocial()
+
+                    };
+                    Commons.GenerateDataWeb(jsonInfo, item.BusinessHours, item.AboutUs, item.AboutUsHome);
                     return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name + " thành công", JsonRequestBehavior.AllowGet);
                 }
                 else
