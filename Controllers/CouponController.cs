@@ -150,7 +150,6 @@ namespace WebNails.Admin.Controllers
                 param.Add("@intTotalRecord", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 _nailCouponRepository.InitConnection(sqlConnect);
-                _nailRepository.InitConnection(sqlConnect);
 
                 var objResult = _nailCouponRepository.GetNailCoupons(param);
 

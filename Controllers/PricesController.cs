@@ -72,8 +72,8 @@ namespace WebNails.Admin.Controllers
                 using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
                 {
                     _nailPricesRepository.InitConnection(sqlConnect);
-                    var objNailCoupon = _nailPricesRepository.GetNailPricesByID(ID);
-                    return View(objNailCoupon);
+                    var objNailPrices = _nailPricesRepository.GetNailPricesByID(ID);
+                    return View(objNailPrices);
                 }
             }
         }
@@ -150,7 +150,6 @@ namespace WebNails.Admin.Controllers
                 param.Add("@intTotalRecord", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 _nailPricesRepository.InitConnection(sqlConnect);
-                _nailRepository.InitConnection(sqlConnect);
 
                 var objResult = _nailPricesRepository.GetNailPrices(param);
 

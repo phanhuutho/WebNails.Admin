@@ -155,6 +155,8 @@
     <Compile Include="Interfaces\INailAccountRepository.cs" />
     <Compile Include="Interfaces\INailPricesRepository.cs" />
     <Compile Include="Interfaces\INailRepository.cs" />
+    <Compile Include="Interfaces\INailSocialRepository.cs" />
+    <Compile Include="Interfaces\ISocialRepository.cs" />
     <Compile Include="Models\JsonInfo.cs" />
     <Compile Include="Models\JsonCoupon.cs" />
     <Compile Include="Models\JsonPrice.cs" />
@@ -171,6 +173,8 @@
     <Compile Include="Repositories\NailAccountRepository.cs" />
     <Compile Include="Repositories\NailPricesRepository.cs" />
     <Compile Include="Repositories\NailRepository.cs" />
+    <Compile Include="Repositories\NailSocialRepository.cs" />
+    <Compile Include="Repositories\SocialRepository.cs" />
     <Compile Include="Utilities\Commons.cs" />
     <Compile Include="Utilities\MailHelper.cs" />
     <Compile Include="Utilities\PagingHelper.cs" />
@@ -1355,10 +1359,12 @@
     <Content Include="Views\Prices\Index.cshtml" />
     <Content Include="Views\Prices\Credit.cshtml" />
     <Content Include="Views\Prices\GetTable.cshtml" />
+    <Content Include="Views\Social\Index.cshtml" />
+    <Content Include="Views\Social\Credit.cshtml" />
+    <Content Include="Views\Social\GetTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Social\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

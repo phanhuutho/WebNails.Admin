@@ -1,0 +1,106 @@
+﻿@model IEnumerable<WebNails.Admin.Models.NailSocial>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Danh sách Social - " + Session["Cur_NailName"];
+
+    var indexCurrent = WebNails.Admin.Utilities.PagingHelper.CurrentIndex(WebNails.Admin.Utilities.PagingHelper.CountSort, WebNails.Admin.Utilities.PagingHelper.PageIndex);
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h5>Danh sách Social - @(Session["Cur_NailName"])</h5>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <a class="btn btn-default" href="/Social/Credit">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive table-primary">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Social</th>
+                                        <th>URL</th>
+                                        <th>Position</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@indexCurrent</td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Title)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.URL)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Position)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Status)
+                                            </td>
+                                            <td>
+                                                @Html.ActionLink("Chỉnh sửa thông tin", "Credit", new { ID = item.ID }, htmlAttributes: new { @class = "btn btn-danger btn-xs" })
+                                                <button class="btn btn-warning btn-xs" id="btDelete" onclick="Delete(@(item.ID))">Xóa</button>
+                                            </td>
+                                        </tr>
+                                        indexCurrent++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 text-left">
+                        @Html.Raw(WebNails.Admin.Utilities.PagingHelper.Page(ViewBag.Count, 5, WebNails.Admin.Utilities.PagingHelper.CountSort, "pagination"))
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        function Delete(intID) {
+            if (confirm("Bạn có chắc chắn muốn xóa ?")) {
+                let overlay = new ItpOverlay();
+                $.ajax({
+                    type: "POST",
+                    url: "/Social/Delete",
+                    data: { ID: intID },
+                    beforeSend: function () {
+                        overlay.show("body");
+                    },
+                    success: function (result) {
+                        $.get("/Social/GetTable", function (htmlResponse)
+                        {
+                            $(".panel-body").html("").append(htmlResponse);
+                        });
+                        AlertMessage(result);
+                    },
+                    complete: function (data) {
+                        overlay.hide("body");
+                    }
+                });
+            }
+            return false;
+        }
+    </script>
+}
