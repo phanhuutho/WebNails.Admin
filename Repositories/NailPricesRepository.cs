@@ -33,7 +33,7 @@ namespace WebNails.Admin.Repositories
 
         public IEnumerable<NailPrices> GetNailPricesByNailID(int NailID)
         {
-            var objNailPrices = this._sqlConnection.Query<NailPrices>(@"spNailPrices_GetNailPricesByNailID", new { intNailID = NailID }, commandType: CommandType.StoredProcedure);
+            var objNailPrices = this._sqlConnection.Query<NailPrices>(@"spNailPrices_GetNailPricesByNailID", new { intNail_ID = NailID }, commandType: CommandType.StoredProcedure);
             return objNailPrices;
         }
 
