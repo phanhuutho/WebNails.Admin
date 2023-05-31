@@ -36,5 +36,34 @@ namespace WebNails.Admin.Repositories
             var objAccount = this._sqlConnection.Query<NailAccount>(@"spNailAccount_GetByEmail", new { strEmail = Email }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(new NailAccount()).FirstOrDefault();
             return objAccount;
         }
+
+        public int UpdateNailAccount(NailAccount item)
+        {
+            var intCount = _sqlConnection.Execute(@"spNailAccount_UpdateNailAccount",
+                    new
+                    {
+                        intID = item.ID,
+                        strFullname = item.Fullname,
+                        strPhone = item.Phone
+                    }, commandType: CommandType.StoredProcedure);
+            return intCount;
+        }
+
+        public int UpdatePassword(NailAccount item)
+        {
+            var intCount = _sqlConnection.Execute(@"spNailAccount_UpdatePassword",
+                    new
+                    {
+                        intID = item.ID,
+                        strPassword = item.Password
+                    }, commandType: CommandType.StoredProcedure);
+            return intCount;
+        }
+
+        public NailAccount GetNailAccountByUsername(string Username)
+        {
+            var objAccount = this._sqlConnection.Query<NailAccount>(@"spNailAccount_GetByUsername", new { strUsername = Username }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(new NailAccount()).FirstOrDefault();
+            return objAccount;
+        }
     }
 }

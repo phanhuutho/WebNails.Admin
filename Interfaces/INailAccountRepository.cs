@@ -8,5 +8,8 @@ namespace WebNails.Admin.Interfaces
         NailAccount GetNailAccount(int ID);
         NailAccount GetNailAccount(string Username, string Password);
         NailAccount GetNailAccount(string Email);
+        NailAccount GetNailAccountByUsername(string Username);
+        int UpdateNailAccount(NailAccount item);
+        int UpdatePassword(NailAccount item);
     }
 }

@@ -1,0 +1,149 @@
+﻿@model WebNails.Admin.Models.NailAccount
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = $"Thông tin account - " + Model.Email;
+}
+
+@section css{
+    <script src="~/Scripts/common.js"></script>
+}
+
+<div class="row">
+    <div class="col-md-12 page-header no-border">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h5>Cập nhật thông tin</h5>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#information" data-toggle="tab" aria-expanded="true">Thông tin cá nhân</a>
+                            </li>
+                            <li>
+                                <a href="#password" data-toggle="tab" aria-expanded="false">Thay đổi mật khẩu</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade active in" id="information">
+                                <form id="myAccount">
+                                    @Html.AntiForgeryToken()
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.Label("Fullname", "Họ tên")
+                                                @Html.EditorFor(model => model.Fullname, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Fullname, "", new { @class = "text-danger" })
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.Label("Phone", "Điện thoại")
+                                                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                                            </div>
+                                            <button type="submit" class="btn btn-danger pull-right">Cập nhật</button>
+                                        </div>
+                                        <div class="col-md-6">&nbsp;</div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="password">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <form id="myUpdarePassword">
+                                            <div class="form-group">
+                                                <label for="password_old">Mật khẩu cũ</label>
+                                                <input type="password" id="password_old" name="password_old" class="form-control" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="password_new">Mật khẩu mới</label>
+                                                <input type="password" id="password_new" name="password_new" class="form-control" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="password_new_re">Xác nhận mật khẩu mới</label>
+                                                <input type="password" id="password_new_re" name="password_new_re" class="form-control" />
+                                            </div>
+                                            <button type="submit" id="btn-update-password" class="btn btn-danger pull-left">Đổi mật khẩu</button>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-6">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/jquery/jquery.validate.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#myUpdarePassword").validate({
+                rules: {
+                    password_old: "required",
+                    password_new: "required",
+                    password_new_re: {
+                        equalTo: "#password_new"
+                    }
+                },
+                messages: {
+                    password_old: { required: "Nhập mật khẩu cũ" },
+                    password_new: { required: "Nhập mật khẩu mới" },
+                    password_new_re: { equalTo: "Mật khẩu mới xác nhận không chính xác" }
+                },
+                submitHandler: function (form) {
+                    let overlay = new ItpOverlay();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Account/UpdatePassword",
+                        data: $(form).serialize(),
+                        beforeSend: function () {
+                            overlay.show("body");
+                        },
+                        success: function (result) {
+                            AlertMessage(result);
+                        },
+                        complete: function (data) {
+                            overlay.hide("body");
+                        }
+                    });
+                    return false;
+                }
+            });
+
+            $("#myAccount").validate({
+                rules: {
+                    Fullname: "required",
+                    Phone: "number"
+                },
+                messages: {
+                    Fullname: { required: "Nhập họ tên" },
+                    Phone: { number: "Số điện thoại không hợp lệ" }
+                },
+                submitHandler: function (form) {
+                    let overlay = new ItpOverlay();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Account/UpdateMyAccount",
+                        data: $(form).serialize(),
+                        beforeSend: function () {
+                            overlay.show("body");
+                        },
+                        success: function (result) {
+                            AlertMessage(result);
+                        },
+                        complete: function (data) {
+                            overlay.hide("body");
+                        }
+                    });
+                    return false;
+                }
+            });
+        });
+    </script>
+}
