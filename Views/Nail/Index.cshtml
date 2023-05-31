@@ -78,10 +78,11 @@
                                                 @Html.DisplayFor(modelItem => item.Address)
                                             </td>
                                             <td>
-                                                @Html.ActionLink("Chỉnh sửa thông tin", "Credit", new { ID = item.ID }, htmlAttributes: new { @class = "btn btn-danger btn-xs" })
+                                                @Html.ActionLink("Chỉnh sửa thông tin", "Credit", new { ID = item.ID }, htmlAttributes: new { @class = "btn btn-default btn-xs text-dark" })
                                                 @Html.ActionLink("Coupon", "Index", "Coupon", new { Nail_ID = item.ID }, htmlAttributes: new { @class = "btn btn-success btn-xs" })
-                                                @Html.ActionLink("Social", "Index", "Social", new { Nail_ID = item.ID }, htmlAttributes: new { @class = "btn btn-primary btn-xs" })
+                                                @Html.ActionLink("Social", "Index", "Social", new { Nail_ID = item.ID }, htmlAttributes: new { @class = "btn btn-info btn-xs" })
                                                 @Html.ActionLink("Prices", "Index", "Prices", new { Nail_ID = item.ID }, htmlAttributes: new { @class = "btn btn-warning btn-xs" })
+                                                <button id="btnSyncDataWeb" class="btn btn-danger btn-xs" onclick="SyncDataWeb(@item.ID)">Cập nhật lên Website</button>
                                             </td>
                                         </tr>
                                         indexCurrent++;
@@ -110,5 +111,8 @@
             $("#Search").val("@strSearch");
         });
 
+        function SyncDataWeb() {
+
+        }
     </script>
 }

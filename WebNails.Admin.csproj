@@ -151,7 +151,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IConnection.cs" />
+    <Compile Include="Interfaces\INailCouponRepository.cs" />
     <Compile Include="Interfaces\INailAccountRepository.cs" />
+    <Compile Include="Interfaces\INailPricesRepository.cs" />
     <Compile Include="Interfaces\INailRepository.cs" />
     <Compile Include="Models\JsonInfo.cs" />
     <Compile Include="Models\JsonCoupon.cs" />
@@ -165,7 +167,9 @@
     <Compile Include="Models\NailSocial.cs" />
     <Compile Include="Models\Social.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\NailCouponRepository.cs" />
     <Compile Include="Repositories\NailAccountRepository.cs" />
+    <Compile Include="Repositories\NailPricesRepository.cs" />
     <Compile Include="Repositories\NailRepository.cs" />
     <Compile Include="Utilities\Commons.cs" />
     <Compile Include="Utilities\MailHelper.cs" />
@@ -1345,11 +1349,15 @@
     <Content Include="Views\Login\ConfirmLoginByCode.cshtml" />
     <Content Include="Views\Nail\Index.cshtml" />
     <Content Include="Views\Nail\Credit.cshtml" />
+    <Content Include="Views\Coupon\Index.cshtml" />
+    <Content Include="Views\Coupon\Credit.cshtml" />
+    <Content Include="Views\Coupon\GetTable.cshtml" />
+    <Content Include="Views\Prices\Index.cshtml" />
+    <Content Include="Views\Prices\Credit.cshtml" />
+    <Content Include="Views\Prices\GetTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Coupon\" />
-    <Folder Include="Views\Prices\" />
     <Folder Include="Views\Social\" />
   </ItemGroup>
   <ItemGroup>

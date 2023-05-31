@@ -41,6 +41,10 @@ namespace WebNails.Admin.Controllers
 
                 ViewBag.Count = param.Get<int>("@intTotalRecord");
 
+                Session.Remove("Cur_Domain");
+                Session.Remove("Cur_NailName");
+                Session.Remove("Cur_NailID");
+
                 return View(objResult);
             }    
         }

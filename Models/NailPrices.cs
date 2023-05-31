@@ -15,5 +15,8 @@ namespace WebNails.Admin.Models
         public bool IsDelete { get; set; }
         public DateTime DateTimeCreate { get; set; }
         public DateTime DateTimeDelete { get; set; }
+
+        //
+        public string Domain { get; set; }
     }
 }

@@ -16,6 +16,8 @@ namespace WebNails.Admin
             // it is NOT necessary to register your controllers
 
             // e.g. container.RegisterType<ITestService, TestService>();
+            container.RegisterType<INailCouponRepository, NailCouponRepository>();
+            container.RegisterType<INailPricesRepository, NailPricesRepository>();
             container.RegisterType<INailAccountRepository, NailAccountRepository>();
             container.RegisterType<INailRepository, NailRepository>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));

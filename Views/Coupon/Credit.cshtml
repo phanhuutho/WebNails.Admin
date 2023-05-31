@@ -1,0 +1,102 @@
+﻿@model WebNails.Admin.Models.NailCoupon
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = $"{(Model.ID == 0 ? "Thêm" : "Sửa")} Coupon - " + Session["Cur_NailName"];
+}
+
+@section css{
+    <script src="~/Plugins/ckeditor/ckeditor.js"></script>
+    <script src="~/Plugins/ckfinder/ckfinder.js"></script>
+    <script src="~/Scripts/common.js"></script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h5>@($"{(Model.ID == 0 ? "Thêm" : "Sửa")} Coupon - " + Session["Cur_NailName"])</h5>
+            </div>
+            <div class="panel-body">
+                <form id="myForm">
+                    @Html.HiddenFor(model => model.ID)
+                    @Html.HiddenFor(model => model.Nail_ID)
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.Label("Position", "Vị trí")
+                                @Html.EditorFor(model => model.Position, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("URL", "URL Coupon")
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.URL, new { htmlAttributes = new { @class = "form-control" } })
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-info" id="btnLogo" onclick="ButtonImageClick('URL')"><i class="fa fa-picture-o"></i></button>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.URL, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Status", "Bật/Tắt Image Coupon")
+                                @Html.CheckBoxFor(model => model.Status, new { @class = "checkbox-inline" })
+                                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group pull-right">
+                                <button type="button" id="btnCancel" class="btn btn-default">Trở về</button>
+                                <span>&nbsp;</span>
+                                <button type="submit" id="btnSubmit" class="btn btn-danger">Cập nhật</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/jquery/jquery.validate.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#myForm").validate({
+                rules: {
+                    URL: "required"
+                },
+                messages: {
+                    URL: { required: "Nhập Image Coupon" }
+                }
+            });
+
+            $("#myForm").submit(function () {
+                if ($(this).valid()) {
+                    let overlay = new ItpOverlay();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Coupon/Credit",
+                        data: $(this).serialize(),
+                        beforeSend: function () {
+                            overlay.show("body");
+                        },
+                        success: function (result) {
+                            AlertMessage(result);
+                        },
+                        complete: function (data) {
+                            overlay.hide("body");
+                        }
+                    });
+                }
+                return false;
+            });
+
+            $("#btnCancel").on("click", function () {
+                location.href = '/Coupon?Nail_ID=@(Model.Nail_ID)';
+            });
+        });
+
+    </script>
+}
