@@ -42,7 +42,7 @@ namespace WebNails.Admin.Controllers
                 _nailPricesRepository.InitConnection(sqlConnect);
                 _nailRepository.InitConnection(sqlConnect);
 
-                var objResult = _nailPricesRepository.GetNailPricesByNailID(param);
+                var objResult = _nailPricesRepository.GetNailPrices(param);
 
                 ViewBag.Count = param.Get<int>("@intTotalRecord");
 
@@ -152,7 +152,7 @@ namespace WebNails.Admin.Controllers
                 _nailPricesRepository.InitConnection(sqlConnect);
                 _nailRepository.InitConnection(sqlConnect);
 
-                var objResult = _nailPricesRepository.GetNailPricesByNailID(param);
+                var objResult = _nailPricesRepository.GetNailPrices(param);
 
                 ViewBag.Count = param.Get<int>("@intTotalRecord");
 

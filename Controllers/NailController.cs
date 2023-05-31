@@ -16,9 +16,13 @@ namespace WebNails.Admin.Controllers
     public class NailController : Controller
     {
         private INailRepository _nailRepository;
-        public NailController(INailRepository nailRepository)
+        private INailCouponRepository _nailCouponRepository;
+        private INailPricesRepository _nailPricesRepository;
+        public NailController(INailRepository nailRepository, INailCouponRepository nailCouponRepository, INailPricesRepository nailPricesRepository)
         {
             _nailRepository = nailRepository;
+            _nailCouponRepository = nailCouponRepository;
+            _nailPricesRepository = nailPricesRepository;
         }
 
         // GET: Nail
@@ -80,28 +84,6 @@ namespace WebNails.Admin.Controllers
                 var intCount = _nailRepository.SaveChange(item);
                 if (intCount == 1)
                 {
-                    var jsonInfo = new JsonInfo
-                    {
-                        Name = item.Name,
-                        Logo = item.Logo,
-                        HyperLinkTell = item.HyperLinkTell,
-                        TextTell = item.TextTell,
-                        LinkBookingAppointment = item.LinkBookingAppointment,
-                        GooglePlus = item.GooglePlus,
-                        Address = item.Address,
-                        LinkGoogleMapAddress = item.LinkGoogleMapAddress,
-                        LinkIFrameGoogleMap = item.LinkIFrameGoogleMap,
-                        ShowCoupon = item.Coupons,
-                        Coupons = new List<JsonCoupon>(),
-                        Prices = new List<JsonPrice>(),
-                        Telegram = new JsonSocial(),
-                        Facebook = new JsonSocial(),
-                        Instagram = new JsonSocial(),
-                        Twitter = new JsonSocial(),
-                        Youtube = new JsonSocial()
-
-                    };
-                    Commons.GenerateDataWeb(jsonInfo, item.BusinessHours, item.AboutUs, item.AboutUsHome);
                     return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name + " thành công", JsonRequestBehavior.AllowGet);
                 }
                 else
@@ -109,6 +91,55 @@ namespace WebNails.Admin.Controllers
                     return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name + " thất bại", JsonRequestBehavior.AllowGet);
                 }
             }    
+        }
+
+        [Authorize]
+        public ActionResult SyncDataWeb(int ID)
+        {
+            if (ID == 0)
+            {
+                return RedirectToAction("Index", "ControlPanel");
+            }
+            else
+            {
+                using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+                {
+                    _nailRepository.InitConnection(sqlConnect);
+                    var objNail = _nailRepository.GetNailByID(ID);
+
+                    _nailCouponRepository.InitConnection(sqlConnect);
+                    var objNailCoupon = _nailCouponRepository.GetNailCouponsByNailID(ID).Select(x => new JsonCoupon { Src = x.URL, Status = x.Status }).ToList();
+
+                    _nailPricesRepository.InitConnection(sqlConnect);
+                    var objNailPrices = _nailPricesRepository.GetNailPricesByNailID(ID).Select(x => new JsonPrice { Src = x.URL, Status = x.Status }).ToList();
+
+
+                    var jsonInfo = new JsonInfo
+                    {
+                        Name = objNail.Name,
+                        Logo = objNail.Logo,
+                        HyperLinkTell = objNail.HyperLinkTell,
+                        TextTell = objNail.TextTell,
+                        LinkBookingAppointment = objNail.LinkBookingAppointment,
+                        GooglePlus = objNail.GooglePlus,
+                        Address = objNail.Address,
+                        LinkGoogleMapAddress = objNail.LinkGoogleMapAddress,
+                        LinkIFrameGoogleMap = objNail.LinkIFrameGoogleMap,
+                        ShowCoupon = objNail.Coupons,
+                        Coupons = objNailCoupon,
+                        Prices = objNailPrices,
+                        Telegram = new JsonSocial(),
+                        Facebook = new JsonSocial(),
+                        Instagram = new JsonSocial(),
+                        Twitter = new JsonSocial(),
+                        Youtube = new JsonSocial()
+
+                    };
+                    Commons.GenerateDataWeb(jsonInfo, objNail.BusinessHours, objNail.AboutUs, objNail.AboutUsHome);
+
+                    return Json("Cập nhật dữ liệu lên website thành công !", JsonRequestBehavior.AllowGet);
+                }
+            }
         }
     }
 }

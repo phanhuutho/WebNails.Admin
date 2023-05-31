@@ -21,13 +21,19 @@ namespace WebNails.Admin.Repositories
 
         public NailCoupon GetNailCouponByID(int ID)
         {
-            var objNailCoupon = this._sqlConnection.Query<NailCoupon>(@"spNailCoupon_GetNailCouponByID", new { intID = ID }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(new NailCoupon()).FirstOrDefault();
+            var objNailCoupon = this._sqlConnection.Query<NailCoupon>(@"spNailCoupon_GetNailCouponsByID", new { intID = ID }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(new NailCoupon()).FirstOrDefault();
             return objNailCoupon;
         }
 
-        public IEnumerable<NailCoupon> GetNailCouponsByNailID(DynamicParameters param)
+        public IEnumerable<NailCoupon> GetNailCoupons(DynamicParameters param)
         {
             var objNailCoupons = this._sqlConnection.Query<NailCoupon>(@"spNailCoupon_GetNailCoupons", param, commandType: CommandType.StoredProcedure);
+            return objNailCoupons;
+        }
+
+        public IEnumerable<NailCoupon> GetNailCouponsByNailID(int NailID)
+        {
+            var objNailCoupons = this._sqlConnection.Query<NailCoupon>(@"spNailCoupon_GetNailCouponsByNailID", new { intNailID = NailID }, commandType: CommandType.StoredProcedure);
             return objNailCoupons;
         }
 

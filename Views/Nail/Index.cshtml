@@ -111,8 +111,25 @@
             $("#Search").val("@strSearch");
         });
 
-        function SyncDataWeb() {
-
+        function SyncDataWeb(intID) {
+            if (confirm("Bạn có chắc chắn muốn cập nhật dữ liệu lên website ?")) {
+                let overlay = new ItpOverlay();
+                $.ajax({
+                    type: "POST",
+                    url: "/Nail/SyncDataWeb",
+                    data: { ID: intID },
+                    beforeSend: function () {
+                        overlay.show("body");
+                    },
+                    success: function (result) {
+                        AlertMessage(result);
+                    },
+                    complete: function (data) {
+                        overlay.hide("body");
+                    }
+                });
+            }
+            return false;
         }
     </script>
 }

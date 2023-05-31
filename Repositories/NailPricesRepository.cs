@@ -25,9 +25,15 @@ namespace WebNails.Admin.Repositories
             return objNailPrices;
         }
 
-        public IEnumerable<NailPrices> GetNailPricesByNailID(DynamicParameters param)
+        public IEnumerable<NailPrices> GetNailPrices(DynamicParameters param)
         {
             var objNailPrices = this._sqlConnection.Query<NailPrices>(@"spNailPrices_GetNailPrices", param, commandType: CommandType.StoredProcedure);
+            return objNailPrices;
+        }
+
+        public IEnumerable<NailPrices> GetNailPricesByNailID(int NailID)
+        {
+            var objNailPrices = this._sqlConnection.Query<NailPrices>(@"spNailPrices_GetNailPricesByNailID", new { intNailID = NailID }, commandType: CommandType.StoredProcedure);
             return objNailPrices;
         }
 

@@ -11,7 +11,8 @@ namespace WebNails.Admin.Interfaces
     public interface INailPricesRepository : IConnection
     {
         NailPrices GetNailPricesByID(int ID);
-        IEnumerable<NailPrices> GetNailPricesByNailID(DynamicParameters param);
+        IEnumerable<NailPrices> GetNailPrices(DynamicParameters param);
+        IEnumerable<NailPrices> GetNailPricesByNailID(int NailID);
         int DeleteNailPrices(int ID);
         int SaveChange(NailPrices item);
     }
