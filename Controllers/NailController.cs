@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -19,12 +20,16 @@ namespace WebNails.Admin.Controllers
         private INailCouponRepository _nailCouponRepository;
         private INailPricesRepository _nailPricesRepository;
         private ISocialRepository _socialRepository;
-        public NailController(INailRepository nailRepository, INailCouponRepository nailCouponRepository, INailPricesRepository nailPricesRepository, ISocialRepository socialRepository)
+        private IActionDetailRepository _actionDetailRepository;
+        private INailAccountRepository _nailAccountRepository;
+        public NailController(INailRepository nailRepository, INailCouponRepository nailCouponRepository, INailPricesRepository nailPricesRepository, ISocialRepository socialRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository)
         {
             _nailRepository = nailRepository;
             _nailCouponRepository = nailCouponRepository;
             _nailPricesRepository = nailPricesRepository;
             _socialRepository = socialRepository;
+            _actionDetailRepository = actionDetailRepository;
+            _nailAccountRepository = nailAccountRepository;
         }
 
         // GET: Nail
@@ -86,6 +91,12 @@ namespace WebNails.Admin.Controllers
                 var intCount = _nailRepository.SaveChange(item);
                 if (intCount == 1)
                 {
+                    _nailAccountRepository.InitConnection(sqlConnect);
+                    var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+
+                    _actionDetailRepository.InitConnection(sqlConnect);
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name, DataJson = JsonConvert.SerializeObject(item) });
+
                     return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name + " thành công", JsonRequestBehavior.AllowGet);
                 }
                 else
@@ -139,6 +150,16 @@ namespace WebNails.Admin.Controllers
                         Youtube = objNailSocial.Where(x => x.Title == "Youtube").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL }).FirstOrDefault()
                     };
                     Commons.GenerateDataWeb(jsonInfo, objNail.BusinessHours, objNail.AboutUs, objNail.AboutUsHome);
+
+                    _nailAccountRepository.InitConnection(sqlConnect);
+                    var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+
+                    _actionDetailRepository.InitConnection(sqlConnect);
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(jsonInfo) });
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { BusinessHours = objNail.BusinessHours }) });
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { AboutUs = objNail.AboutUs }) });
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { AboutUsHome = objNail.AboutUsHome }) });
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { ID = objNail.ID }) });
 
                     return Json("Cập nhật dữ liệu lên website thành công !", JsonRequestBehavior.AllowGet);
                 }

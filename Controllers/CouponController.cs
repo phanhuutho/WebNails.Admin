@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,10 +17,14 @@ namespace WebNails.Admin.Controllers
     {
         private INailCouponRepository _nailCouponRepository;
         private INailRepository _nailRepository;
-        public CouponController(INailCouponRepository nailCouponRepository, INailRepository nailRepository)
+        private IActionDetailRepository _actionDetailRepository;
+        private INailAccountRepository _nailAccountRepository;
+        public CouponController(INailCouponRepository nailCouponRepository, INailRepository nailRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository)
         {
             _nailCouponRepository = nailCouponRepository;
             _nailRepository = nailRepository;
+            _actionDetailRepository = actionDetailRepository;
+            _nailAccountRepository = nailAccountRepository;
         }
         // GET: Coupon
         [Authorize]
@@ -93,11 +98,17 @@ namespace WebNails.Admin.Controllers
                 var intCount = _nailCouponRepository.SaveChange(item);
                 if (intCount == 1)
                 {
-                    return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Coupon cho " + Session["Cur_NailName"] + " thành công", JsonRequestBehavior.AllowGet);
+                    _nailAccountRepository.InitConnection(sqlConnect);
+                    var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+
+                    _actionDetailRepository.InitConnection(sqlConnect);
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_COUPON", UserID = objAccount.ID, Description = $"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Coupon - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item) });
+
+                    return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Coupon - " + Session["Cur_NailName"] + " thành công", JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Coupon cho " + Session["Cur_NailName"] + " thất bại", JsonRequestBehavior.AllowGet);
+                    return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Coupon - " + Session["Cur_NailName"] + " thất bại", JsonRequestBehavior.AllowGet);
                 }
             }
         }
@@ -122,6 +133,12 @@ namespace WebNails.Admin.Controllers
                     var intCount = _nailCouponRepository.DeleteNailCoupon(ID);
                     if (intCount == 1)
                     {
+                        _nailAccountRepository.InitConnection(sqlConnect);
+                        var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+
+                        _actionDetailRepository.InitConnection(sqlConnect);
+                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_COUPON", UserID = objAccount.ID, Description = "Xóa Coupon - " + Session["Cur_NailName"], DataJson = "{ID:" + ID + "}" });
+
                         return Json("Xóa thành công Coupon", JsonRequestBehavior.AllowGet);
                     }
                     else

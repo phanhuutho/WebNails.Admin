@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,11 +18,15 @@ namespace WebNails.Admin.Controllers
         private INailSocialRepository _nailSocialRepository;
         private INailRepository _nailRepository;
         private ISocialRepository _socialRepository;
-        public SocialController(INailSocialRepository nailSocialRepository, INailRepository nailRepository, ISocialRepository socialRepository)
+        private IActionDetailRepository _actionDetailRepository;
+        private INailAccountRepository _nailAccountRepository;
+        public SocialController(INailSocialRepository nailSocialRepository, INailRepository nailRepository, ISocialRepository socialRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository)
         {
             _nailSocialRepository = nailSocialRepository;
             _nailRepository = nailRepository;
             _socialRepository = socialRepository;
+            _actionDetailRepository = actionDetailRepository;
+            _nailAccountRepository = nailAccountRepository;
         }
         // GET: Social
         [Authorize]
@@ -106,6 +111,12 @@ namespace WebNails.Admin.Controllers
                 var intCount = _nailSocialRepository.SaveChange(item);
                 if (intCount == 1)
                 {
+                    _nailAccountRepository.InitConnection(sqlConnect);
+                    var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+
+                    _actionDetailRepository.InitConnection(sqlConnect);
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_SOCIAL", UserID = objAccount.ID, Description = $"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Social - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item) });
+
                     return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Social - " + Session["Cur_NailName"] + " thành công", JsonRequestBehavior.AllowGet);
                 }
                 else
@@ -135,6 +146,12 @@ namespace WebNails.Admin.Controllers
                     var intCount = _nailSocialRepository.DeleteNailSocial(ID);
                     if (intCount == 1)
                     {
+                        _nailAccountRepository.InitConnection(sqlConnect);
+                        var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+
+                        _actionDetailRepository.InitConnection(sqlConnect);
+                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_SOCIAL", UserID = objAccount.ID, Description = "Xóa Social - " + Session["Cur_NailName"], DataJson = "{ID:" + ID + "}" });
+
                         return Json("Xóa thành công Social", JsonRequestBehavior.AllowGet);
                     }
                     else

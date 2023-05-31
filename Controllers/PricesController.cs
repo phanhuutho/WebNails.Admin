@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,10 +17,14 @@ namespace WebNails.Admin.Controllers
     {
         private INailPricesRepository _nailPricesRepository;
         private INailRepository _nailRepository;
-        public PricesController(INailPricesRepository nailPricesRepository, INailRepository nailRepository)
+        private IActionDetailRepository _actionDetailRepository;
+        private INailAccountRepository _nailAccountRepository;
+        public PricesController(INailPricesRepository nailPricesRepository, INailRepository nailRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository)
         {
             _nailPricesRepository = nailPricesRepository;
             _nailRepository = nailRepository;
+            _actionDetailRepository = actionDetailRepository;
+            _nailAccountRepository = nailAccountRepository;
         }
         // GET: Prices
         [Authorize]
@@ -93,6 +98,12 @@ namespace WebNails.Admin.Controllers
                 var intCount = _nailPricesRepository.SaveChange(item);
                 if (intCount == 1)
                 {
+                    _nailAccountRepository.InitConnection(sqlConnect);
+                    var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+
+                    _actionDetailRepository.InitConnection(sqlConnect);
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_PRICES", UserID = objAccount.ID, Description = $"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Prices List - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item) });
+                    
                     return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Prices List - " + Session["Cur_NailName"] + " thành công", JsonRequestBehavior.AllowGet);
                 }
                 else
@@ -122,6 +133,12 @@ namespace WebNails.Admin.Controllers
                     var intCount = _nailPricesRepository.DeleteNailPrices(ID);
                     if (intCount == 1)
                     {
+                        _nailAccountRepository.InitConnection(sqlConnect);
+                        var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+
+                        _actionDetailRepository.InitConnection(sqlConnect);
+                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_PRICES", UserID = objAccount.ID, Description = "Xóa Prices List - " + Session["Cur_NailName"], DataJson = "{ID:" + ID + "}" });
+
                         return Json("Xóa thành công Prices List", JsonRequestBehavior.AllowGet);
                     }
                     else

@@ -150,6 +150,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IActionDetailRepository.cs" />
     <Compile Include="Interfaces\IConnection.cs" />
     <Compile Include="Interfaces\INailCouponRepository.cs" />
     <Compile Include="Interfaces\INailAccountRepository.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Interfaces\INailRepository.cs" />
     <Compile Include="Interfaces\INailSocialRepository.cs" />
     <Compile Include="Interfaces\ISocialRepository.cs" />
+    <Compile Include="Models\ActionDetail.cs" />
     <Compile Include="Models\JsonInfo.cs" />
     <Compile Include="Models\JsonCoupon.cs" />
     <Compile Include="Models\JsonPrice.cs" />
@@ -169,6 +171,7 @@
     <Compile Include="Models\NailSocial.cs" />
     <Compile Include="Models\Social.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\ActionDetailRepository.cs" />
     <Compile Include="Repositories\NailCouponRepository.cs" />
     <Compile Include="Repositories\NailAccountRepository.cs" />
     <Compile Include="Repositories\NailPricesRepository.cs" />
