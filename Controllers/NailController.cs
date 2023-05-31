@@ -66,7 +66,7 @@ namespace WebNails.Admin.Controllers
             if(ID == 0)
             {
                 Session["Cur_Domain"] = "Temp";
-                return View(new Nail() { ID = 0, Name = "" });
+                return View(new Nail() { ID = 0, Name = "", GUID = Guid.NewGuid() });
             }
             else
             {
@@ -155,11 +155,11 @@ namespace WebNails.Admin.Controllers
                     var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
 
                     _actionDetailRepository.InitConnection(sqlConnect);
-                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(jsonInfo) });
-                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { BusinessHours = objNail.BusinessHours }) });
-                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { AboutUs = objNail.AboutUs }) });
-                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { AboutUsHome = objNail.AboutUsHome }) });
-                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { ID = objNail.ID }) });
+                    //_actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(jsonInfo) });
+                    //_actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { BusinessHours = objNail.BusinessHours }) });
+                    //_actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { AboutUs = objNail.AboutUs }) });
+                    //_actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { AboutUsHome = objNail.AboutUsHome }) });
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { ID = objNail.ID }) });
 
                     return Json("Cập nhật dữ liệu lên website thành công !", JsonRequestBehavior.AllowGet);
                 }
