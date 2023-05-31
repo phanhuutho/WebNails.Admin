@@ -13,6 +13,13 @@ namespace WebNails.Admin.Repositories
     public class SocialRepository : ISocialRepository
     {
         protected SqlConnection _sqlConnection { get; set; }
+
+        public IEnumerable<Social> GetSocialMappingNailSocialByNailID(int NailID)
+        {
+            var objSocial = this._sqlConnection.Query<Social>(@"spSocial_GetSocialMappingNailSocialByNailID", new { intNail_ID = NailID }, commandType: CommandType.StoredProcedure);
+            return objSocial;
+        }
+
         public IEnumerable<Social> GetSocials()
         {
             var objSocial = this._sqlConnection.Query<Social>(@"spSocial_GetSocials", commandType: CommandType.StoredProcedure);

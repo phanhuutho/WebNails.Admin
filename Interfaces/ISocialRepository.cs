@@ -11,5 +11,6 @@ namespace WebNails.Admin.Interfaces
     {
         IEnumerable<Social> GetSocials();
         IEnumerable<Social> GetSocials(int NailID);
+        IEnumerable<Social> GetSocialMappingNailSocialByNailID(int NailID);
     }
 }

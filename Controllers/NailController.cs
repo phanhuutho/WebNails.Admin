@@ -18,11 +18,13 @@ namespace WebNails.Admin.Controllers
         private INailRepository _nailRepository;
         private INailCouponRepository _nailCouponRepository;
         private INailPricesRepository _nailPricesRepository;
-        public NailController(INailRepository nailRepository, INailCouponRepository nailCouponRepository, INailPricesRepository nailPricesRepository)
+        private ISocialRepository _socialRepository;
+        public NailController(INailRepository nailRepository, INailCouponRepository nailCouponRepository, INailPricesRepository nailPricesRepository, ISocialRepository socialRepository)
         {
             _nailRepository = nailRepository;
             _nailCouponRepository = nailCouponRepository;
             _nailPricesRepository = nailPricesRepository;
+            _socialRepository = socialRepository;
         }
 
         // GET: Nail
@@ -113,6 +115,8 @@ namespace WebNails.Admin.Controllers
                     _nailPricesRepository.InitConnection(sqlConnect);
                     var objNailPrices = _nailPricesRepository.GetNailPricesByNailID(ID).Select(x => new JsonPrice { Src = x.URL, Status = x.Status }).ToList();
 
+                    _socialRepository.InitConnection(sqlConnect);
+                    var objNailSocial = _socialRepository.GetSocialMappingNailSocialByNailID(ID);
 
                     var jsonInfo = new JsonInfo
                     {
@@ -128,12 +132,11 @@ namespace WebNails.Admin.Controllers
                         ShowCoupon = objNail.Coupons,
                         Coupons = objNailCoupon,
                         Prices = objNailPrices,
-                        Telegram = new JsonSocial(),
-                        Facebook = new JsonSocial(),
-                        Instagram = new JsonSocial(),
-                        Twitter = new JsonSocial(),
-                        Youtube = new JsonSocial()
-
+                        Telegram = objNailSocial.Where(x => x.Title == "Telegram").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL }).FirstOrDefault(),
+                        Facebook = objNailSocial.Where(x => x.Title == "Facebook").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL }).FirstOrDefault(),
+                        Instagram = objNailSocial.Where(x => x.Title == "Instagram").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL }).FirstOrDefault(),
+                        Twitter = objNailSocial.Where(x => x.Title == "Twitter").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL }).FirstOrDefault(),
+                        Youtube = objNailSocial.Where(x => x.Title == "Youtube").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL }).FirstOrDefault()
                     };
                     Commons.GenerateDataWeb(jsonInfo, objNail.BusinessHours, objNail.AboutUs, objNail.AboutUsHome);
 
