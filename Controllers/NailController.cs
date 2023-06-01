@@ -149,7 +149,7 @@ namespace WebNails.Admin.Controllers
                         Twitter = objNailSocial.Where(x => x.Title == "Twitter").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL }).FirstOrDefault(),
                         Youtube = objNailSocial.Where(x => x.Title == "Youtube").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL }).FirstOrDefault()
                     };
-                    Commons.GenerateDataWeb(jsonInfo, objNail.BusinessHours, objNail.AboutUs, objNail.AboutUsHome);
+                    Commons.GenerateDataWeb(jsonInfo, objNail.BusinessHours, objNail.AboutUs, objNail.AboutUsHome, objNail.Domain);
 
                     _nailAccountRepository.InitConnection(sqlConnect);
                     var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
