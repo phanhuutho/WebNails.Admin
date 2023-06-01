@@ -43,9 +43,12 @@
                     <div class="col-xs-6">
                         <h5>Danh sách Domain Nail</h5>
                     </div>
-                    <div class="col-xs-6 text-right">
-                        <a class="btn btn-default" href="/Nail/Credit">Thêm mới</a>
-                    </div>
+                    @if (User.IsInRole("1"))
+                    {
+                        <div class="col-xs-6 text-right">
+                            <a class="btn btn-default" href="/Nail/Credit">Thêm mới</a>
+                        </div>
+                    }
                 </div>
 
             </div>
