@@ -28,6 +28,11 @@ namespace WebNails.Admin.Utilities
             //VirtualData
             string path = string.Format(strPathVirtualData, domain);
 
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
             //Write Business Hours
             File.WriteAllText(path + "business-hours.txt", txtBusinessHours);
 
