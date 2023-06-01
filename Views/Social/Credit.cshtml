@@ -35,7 +35,7 @@
                                     <option value="">Chọn loại Social</option>
                                     @foreach (var item in Socials)
                                     {
-                                        <option value="@item.ID">@item.Title</option>
+                                        <option value="@item.ID" @(item.ID == Model.Social_ID ? "selected='selected'" : "")>@item.Title</option>
                                     }
                                 </select>
                                 @Html.ValidationMessageFor(model => model.Social_ID, "", new { @class = "text-danger" })
