@@ -53,7 +53,6 @@
                                                 @Html.DisplayFor(modelItem => item.Status)
                                             </td>
                                             <td>
-                                                @Html.ActionLink("Chỉnh sửa thông tin", "Credit", new { ID = item.ID }, htmlAttributes: new { @class = "btn btn-danger btn-xs" })
                                                 <button class="btn btn-warning btn-xs" id="btDelete" onclick="Delete(@(item.ID))">Xóa</button>
                                             </td>
                                         </tr>
