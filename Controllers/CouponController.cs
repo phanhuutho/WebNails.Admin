@@ -53,9 +53,9 @@ namespace WebNails.Admin.Controllers
 
                 //get info nail
                 var objNail = _nailRepository.GetNailByID(Nail_ID);
-                Session["Cur_Domain"] = objNail.Domain;
-                Session["Cur_NailName"] = objNail.Name;
-                Session["Cur_NailID"] = objNail.ID;
+                Session.Add("Cur_Domain",objNail.Domain);
+                Session.Add("Cur_NailName",objNail.Name);
+                Session.Add("Cur_NailID",objNail.ID);
 
                 return View(objResult);
             }

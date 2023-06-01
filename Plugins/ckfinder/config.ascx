@@ -30,8 +30,8 @@
         LicenseName = "";
         LicenseKey = "";
 
-        string strVirtualPath = string.Format(ConfigurationManager.AppSettings["VirtualUpload"], Session["Cur_Domain"]);
-        string strVirtualPublish = string.Format(ConfigurationManager.AppSettings["VirtualPublish"], Session["Cur_Domain"]);
+        string strVirtualPath = string.Format(ConfigurationManager.AppSettings["VirtualUpload"], HttpContext.Current.Session["Cur_Domain"]);
+        string strVirtualPublish = string.Format(ConfigurationManager.AppSettings["VirtualPublish"], HttpContext.Current.Session["Cur_Domain"]);
 
         // The base URL used to reach files in CKFinder through the browser.
         //BaseUrl = "~/Uploads/";

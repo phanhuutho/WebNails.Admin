@@ -65,7 +65,7 @@ namespace WebNails.Admin.Controllers
         {
             if(ID == 0)
             {
-                Session["Cur_Domain"] = "Temp";
+                Session.Add("Cur_Domain","Temp");
                 return View(new Nail() { ID = 0, Name = "", GUID = Guid.NewGuid() });
             }
             else
@@ -74,7 +74,7 @@ namespace WebNails.Admin.Controllers
                 {
                     _nailRepository.InitConnection(sqlConnect);
                     var objNail = _nailRepository.GetNailByID(ID);
-                    Session["Cur_Domain"] = objNail.Domain;
+                    Session.Add("Cur_Domain", objNail.Domain);
                     return View(objNail);
                 }
             }
