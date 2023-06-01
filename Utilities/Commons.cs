@@ -23,10 +23,10 @@ namespace WebNails.Admin.Utilities
             return result;
         }
 
-        public static void GenerateDataWeb(JsonInfo jsonInfo, string txtBusinessHours, string txtAboutUs, string txtAboutUsHome, string domain)
+        public static void GenerateDataWeb(JsonInfo jsonInfo, string txtBusinessHours, string txtAboutUs, string txtAboutUsHome, string domain, string strPathVirtualData)
         {
             //VirtualData
-            string path = string.Format(ConfigurationManager.AppSettings["VirtualUpload"], domain);
+            string path = string.Format(strPathVirtualData, domain);
 
             //Write Business Hours
             File.WriteAllText(path + "business-hours.txt", txtBusinessHours);
