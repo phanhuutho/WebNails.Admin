@@ -106,8 +106,43 @@
 
     </div>
 </div>
+@section modalcustom{
+    <div class="modal fade" id="myModalSecurityPassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabelSecurityPassword" aria-hidden="true" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h5 class="modal-title" id="myModalLabelSecurityPassword">Nhập mật khẩu của bạn để xác nhận việc này</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Nhập mã khẩu</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form action="" id="formSecurityPassword" method="post">
+                                <fieldset>
+                                    <div class="form-group input-group">
+                                        <span class="input-group-addon"><i class="fa fa-lock" aria-hidden="false"></i></span>
+                                        <input class="form-control text-box single-line password" id="Password" name="Password" placeholder="Mật khẩu" type="password">
+                                    </div>
 
+                                    <button type="submit" class="btn btn-danger pull-right">Xác nhận</button>
+
+                                    <div class="form-group">
+                                        <label id="Password-error" class="error" for="Password"></label>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 @section scripts{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
     <script type="text/javascript">
 
         $(document).ready(function () {
@@ -116,21 +151,50 @@
 
         function SyncDataWeb(intID) {
             if (confirm("Bạn có chắc chắn muốn cập nhật dữ liệu lên website ?")) {
-                let overlay = new ItpOverlay();
-                $.ajax({
-                    type: "POST",
-                    url: "/Nail/SyncDataWeb",
-                    data: { ID: intID },
-                    beforeSend: function () {
-                        overlay.show("body");
-                    },
-                    success: function (result) {
-                        AlertMessage(result);
-                    },
-                    complete: function (data) {
-                        overlay.hide("body");
-                    }
-                });
+                $('#myModalSecurityPassword').modal("show");
+                $('#myModalSecurityPassword').on('shown.bs.modal', function () {
+                    $("#formSecurityPassword").validate({
+                        rules: {
+                            Password: "required"
+                        },
+                        messages: {
+                            Password: { required: "Nhập mật khẩu" }
+                        },
+                        submitHandler: function (form) {
+                            $.ajax({
+                                type: "POST",
+                                url: "/Nail/CheckSecurityPassword",
+                                async: false,
+                                data: { strPassword: $("#Password","#formSecurityPassword").val()},
+                                success: function (result) {
+                                    if (result.CheckPassword == false) {
+                                        AlertMessage(result.Message);
+                                        $('#myModalSecurityPassword').modal("hide");
+                                    }
+                                    else {
+                                        let overlay = new ItpOverlay();
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "/Nail/SyncDataWeb",
+                                            data: { ID: intID },
+                                            beforeSend: function () {
+                                                overlay.show("body");
+                                            },
+                                            success: function (result) {
+                                                AlertMessage(result);
+                                            },
+                                            complete: function (data) {
+                                                overlay.hide("body");
+                                                $('#myModalSecurityPassword').modal("hide");
+                                            }
+                                        });
+                                    }
+                                },
+                            });
+                            return false;
+                        }
+                    });
+                })
             }
             return false;
         }

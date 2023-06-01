@@ -165,5 +165,25 @@ namespace WebNails.Admin.Controllers
                 }
             }
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult CheckSecurityPassword(string strPassword)
+        {
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+            {
+                var strMD5Password = Sercurity.Md5(strPassword);
+                _nailAccountRepository.InitConnection(sqlConnect);
+                var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name, strMD5Password);
+                if (objAccount.ID != 0)
+                {
+                    return Json(new { CheckPassword = true, Message = "Success" }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { CheckPassword = false, Message = "Mật khẩu không chính xác" }, JsonRequestBehavior.AllowGet);
+                }
+            }    
+        }
     }
 }
