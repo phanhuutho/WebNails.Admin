@@ -92,7 +92,7 @@ namespace WebNails.Admin.Controllers
                 if (intCount == 1)
                 {
                     _nailAccountRepository.InitConnection(sqlConnect);
-                    var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+                    var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                     _actionDetailRepository.InitConnection(sqlConnect);
                     _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name, DataJson = JsonConvert.SerializeObject(item) });
@@ -152,7 +152,7 @@ namespace WebNails.Admin.Controllers
                     Commons.GenerateDataWeb(jsonInfo, objNail.BusinessHours, objNail.AboutUs, objNail.AboutUsHome, objNail.Domain, ConfigurationManager.AppSettings["VirtualData"]);
 
                     _nailAccountRepository.InitConnection(sqlConnect);
-                    var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+                    var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                     _actionDetailRepository.InitConnection(sqlConnect);
                     //_actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(jsonInfo) });

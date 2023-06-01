@@ -99,7 +99,7 @@ namespace WebNails.Admin.Controllers
                 if (intCount == 1)
                 {
                     _nailAccountRepository.InitConnection(sqlConnect);
-                    var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+                    var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                     _actionDetailRepository.InitConnection(sqlConnect);
                     _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_PRICES", UserID = objAccount.ID, Description = $"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Prices List - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item) });
@@ -134,7 +134,7 @@ namespace WebNails.Admin.Controllers
                     if (intCount == 1)
                     {
                         _nailAccountRepository.InitConnection(sqlConnect);
-                        var objAccount = _nailAccountRepository.GetNailAccount(User.Identity.Name);
+                        var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                         _actionDetailRepository.InitConnection(sqlConnect);
                         _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_PRICES", UserID = objAccount.ID, Description = "Xóa Prices List - " + Session["Cur_NailName"], DataJson = "{ID:" + ID + "}" });
