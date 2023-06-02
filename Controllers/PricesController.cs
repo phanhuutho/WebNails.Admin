@@ -96,7 +96,7 @@ namespace WebNails.Admin.Controllers
             {
                 _nailPricesRepository.InitConnection(sqlConnect);
                 var intCount = _nailPricesRepository.SaveChange(item);
-                if (intCount == 1)
+                if (intCount > 0)
                 {
                     _nailAccountRepository.InitConnection(sqlConnect);
                     var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);

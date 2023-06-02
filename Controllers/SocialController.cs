@@ -109,7 +109,7 @@ namespace WebNails.Admin.Controllers
             {
                 _nailSocialRepository.InitConnection(sqlConnect);
                 var intCount = _nailSocialRepository.SaveChange(item);
-                if (intCount == 1)
+                if (intCount > 0)
                 {
                     _nailAccountRepository.InitConnection(sqlConnect);
                     var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
