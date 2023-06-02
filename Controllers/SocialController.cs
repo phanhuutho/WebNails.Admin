@@ -111,13 +111,15 @@ namespace WebNails.Admin.Controllers
                 var intCount = _nailSocialRepository.SaveChange(item);
                 if (intCount > 0)
                 {
+                    var isCreate = item.ID == 0;
+                    item.ID = isCreate ? intCount : item.ID;
                     _nailAccountRepository.InitConnection(sqlConnect);
                     var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                     _actionDetailRepository.InitConnection(sqlConnect);
-                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_SOCIAL", UserID = objAccount.ID, Description = $"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Social - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item), Field = "Nail_ID", FieldValue = item.ID });
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_SOCIAL", UserID = objAccount.ID, Description = $"{(isCreate ? "Thêm" : "Sửa")} thông tin Social - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item), Field = "Nail_ID", FieldValue = item.ID });
 
-                    return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Social - " + Session["Cur_NailName"] + " thành công", JsonRequestBehavior.AllowGet);
+                    return Json($"{(isCreate ? "Thêm" : "Sửa")} thông tin Social - " + Session["Cur_NailName"] + " thành công", JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
