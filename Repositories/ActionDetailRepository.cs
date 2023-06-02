@@ -27,6 +27,18 @@ namespace WebNails.Admin.Repositories
             return intCount;
         }
 
+        public ActionDetail GetActionDetail(Guid guid)
+        {
+            var objActionDetail = this._sqlConnection.Query<ActionDetail>(@"spActionDetails_GetActionDetail", new { ID = guid }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(new ActionDetail()).FirstOrDefault();
+            return objActionDetail;
+        }
+
+        public IEnumerable<ActionDetail> GetActionDetails(DynamicParameters param)
+        {
+            var objActionDetails = this._sqlConnection.Query<ActionDetail>(@"spActionDetails_GetActionDetails", param, commandType: CommandType.StoredProcedure);
+            return objActionDetails;
+        }
+
         public void InitConnection(SqlConnection sqlConnection)
         {
             this._sqlConnection = sqlConnection;

@@ -1,0 +1,103 @@
+﻿@model WebNails.Admin.Models.Nail
+
+<div class="row">
+    <div class="col-md-12">
+        <span id="TitlePartialView" style="display:none;">Lịch sử thông tin</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            @Html.Label("DateTimeCreate", "Thời gian")
+            <div class="text-word-break">
+                @Html.Raw(Model.DateTimeCreate)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Domain", "Domain")
+            <div class="text-word-break">
+                @Html.Raw(Model.Domain)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Name", "Tên tiệm Nail")
+            <div class="text-word-break">
+                @Html.Raw(Model.Name)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Address", "Địa chỉ tiệm Nail")
+            <div class="text-word-break">
+                @Html.Raw(Model.Address)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("HyperLinkTell", "Đường dẫn tích hợp call trên web (format: tel:(xxx)xxxxxxx)")
+            <div class="text-word-break">
+                @Html.Raw(Model.HyperLinkTell)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("TextTell", "Số điện thoại tiệm Nail")
+            <div class="text-word-break">
+                @Html.Raw(Model.TextTell)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Coupons", "Bật/Tắt popup Coupon trên web")
+            <div class="text-word-break">
+                @Html.Raw(Model.Coupons ? "Bật" : "Tắt")
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Logo", "Logo tiệm nail")
+            <div class="text-word-break">
+                @Html.Raw(Model.Logo)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("GooglePlus", "URL tìm kiếm tiệm Nail trên Google")
+            <div class="text-word-break">
+                @Html.Raw(Model.GooglePlus)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("LinkGoogleMapAddress", "URL Google Map tiệm Nail")
+            <div class="text-word-break">
+                @Html.Raw(Model.LinkGoogleMapAddress)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("LinkIFrameGoogleMap", "URL bản đồ tiệm Nail hiển thị trên web")
+            <div class="text-word-break">
+                @Html.Raw(Model.LinkIFrameGoogleMap)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("LinkBookingAppointment", "URL Booking Appointment")
+            <div class="text-word-break">
+                @Html.Raw(Model.LinkBookingAppointment)
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            @Html.Label("BusinessHours", "Business Hours")
+            <div class="text-word-break">
+                @Html.Raw(Model.BusinessHours)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("AboutUsHome", "Nội dung About Us trang Home")
+            <div class="text-word-break">
+                @Html.Raw(Model.AboutUsHome)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("AboutUs", "Nội dung trang About Us")
+            <div class="text-word-break">
+                @Html.Raw(Model.AboutUs)
+            </div>
+        </div>
+    </div>
+</div>

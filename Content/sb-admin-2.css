@@ -655,6 +655,9 @@ table.dataTable thead .sorting:after {
 .timeline-body > p + p {
   margin-top: 5px;
 }
+.text-word-break {
+    word-break: break-all;
+}
 @media (max-width: 767px) {
   ul.timeline:before {
     left: 25px;

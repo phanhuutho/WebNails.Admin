@@ -141,13 +141,13 @@
 
         acl.FolderView = true;
         acl.FolderCreate = true;
-        acl.FolderRename = true;
-        acl.FolderDelete = true;
+        acl.FolderRename = false;
+        acl.FolderDelete = false;
 
         acl.FileView = true;
         acl.FileUpload = true;
-        acl.FileRename = true;
-        acl.FileDelete = true;
+        acl.FileRename = false;
+        acl.FileDelete = false;
 
         // Resource Type settings.
         // A resource type is nothing more than a way to group files under

@@ -1,0 +1,43 @@
+﻿@model WebNails.Admin.Models.NailSocial
+
+<div class="row">
+    <div class="col-md-12">
+        <span id="TitlePartialView" style="display:none;">Lịch sử Social</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            @Html.Label("DateTimeCreate", "Thời gian")
+            <div class="text-word-break">
+                @Html.Raw(Model.DateTimeCreate)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Position", "Vị trí")
+            <div class="text-word-break">
+                @Html.Raw(Model.Position)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Social_ID", "Social")
+            <div class="text-word-break">
+                @Html.Raw(Model.Title)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("URL", "URL Social")
+            <div class="text-word-break">
+                @Html.Raw(Model.URL)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Status", "Bật/Tắt Social")
+            <div class="text-word-break">
+                @Html.Raw(Model.Status ? "Bật" : "Tắt")
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+    </div>
+</div>

@@ -143,6 +143,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ControlPanelController.cs" />
     <Compile Include="Controllers\CouponController.cs" />
+    <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\NailController.cs" />
@@ -1367,6 +1368,11 @@
     <Content Include="Views\Social\Credit.cshtml" />
     <Content Include="Views\Social\GetTable.cshtml" />
     <Content Include="Views\Account\MyAccount.cshtml" />
+    <Content Include="Views\History\Index.cshtml" />
+    <Content Include="Views\History\DataDetail_Info.cshtml" />
+    <Content Include="Views\History\DataDetail_Coupon.cshtml" />
+    <Content Include="Views\History\DataDetail_Social.cshtml" />
+    <Content Include="Views\History\DataDetail_Prices.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

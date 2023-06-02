@@ -1,0 +1,142 @@
+﻿@model IEnumerable<WebNails.Admin.Models.ActionDetail>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Danh sách Domain Nail";
+    string Tab = string.Format("{0}", ViewBag.Table);
+    var intNail_ID = int.Parse(string.Format("{0}", ViewBag.Nail_ID ?? 0));
+    var indexCurrent = WebNails.Admin.Utilities.PagingHelper.CurrentIndex(WebNails.Admin.Utilities.PagingHelper.CountSort, WebNails.Admin.Utilities.PagingHelper.PageIndex);
+}
+@section css{
+    <style type="text/css">
+        .modal-body{
+            height: 600px;
+            overflow-y: auto;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h5>Lịch sử thông tin cập nhật</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="nav nav-tabs">
+                            <li>
+                                <a id="NAIL" href="javascript:void(0)" onclick="OpenDataTab('NAIL', @intNail_ID)">Chỉnh sửa thông tin</a>
+                            </li>
+                            <li>
+                                <a id="NAIL_COUPON" href="javascript:void(0)" onclick="OpenDataTab('NAIL_COUPON', @intNail_ID)">Coupon</a>
+                            </li>
+                            <li>
+                                <a id="NAIL_SOCIAL" href="javascript:void(0)" onclick="OpenDataTab('NAIL_SOCIAL', @intNail_ID)">Social</a>
+                            </li>
+                            <li>
+                                <a id="NAIL_PRICES" href="javascript:void(0)" onclick="OpenDataTab('NAIL_PRICES', @intNail_ID)">Prices List</a>
+                            </li>
+                            <li>
+                                <a id="SyncDataWeb" href="javascript:void(0)" onclick="OpenDataTab('SyncDataWeb', @intNail_ID)">Cập nhật lên website</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade active in">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive table-primary">
+                                            <table class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Ngày giờ</th>
+                                                        <th>Username</th>
+                                                        <th>Description</th>
+                                                        @if (Tab != "SyncDataWeb")
+                                                        {
+                                                            <th></th>
+                                                        }
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.DateTimeCreate)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Username)
+                                                            </td>
+                                                            <td>
+                                                                @Html.DisplayFor(modelItem => item.Description)
+                                                            </td>
+                                                            @if (item.Table != "SyncDataWeb")
+                                                            {
+                                                                <td>
+                                                                    <button id="btnSyncDataWeb" class="btn btn-danger btn-xs" onclick="OpenDataDetail('@item.ID')">Chi tiết</button>
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                        indexCurrent++;
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 text-left">
+                                        @Html.Raw(WebNails.Admin.Utilities.PagingHelper.Page(ViewBag.Count, 5, WebNails.Admin.Utilities.PagingHelper.CountSort, "pagination"))
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            ActiveTab('@Tab');
+        });
+
+        function ActiveTab(strTab) {
+            $("#" + strTab).parent("li").addClass("active");
+        }
+
+        function OpenDataTab(strTab, intNailID) {
+            location.href = '/History?Nail_ID=' + intNailID + '&Tab=' + strTab;
+        }
+
+        function OpenDataDetail(strGUID) {
+            let overlay = new ItpOverlay();
+            $.ajax({
+                type: "POST",
+                url: "/History/GetDataDetail",
+                data: { ID: strGUID },
+                beforeSend: function () {
+                    overlay.show("body");
+                },
+                success: function (result) {
+                    $("#myModalLabel", "#myModalMessage").html("").append($(result).find("#TitlePartialView").html());
+                    AlertMessage(result);
+                },
+                complete: function (data) {
+                    overlay.hide("body");
+                }
+            });
+        }
+    </script>
+}
