@@ -143,6 +143,7 @@ namespace WebNails.Admin.Controllers
                 using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
                 {
                     _nailSocialRepository.InitConnection(sqlConnect);
+                    var item = _nailSocialRepository.GetNailSocialByID(ID);
                     var intCount = _nailSocialRepository.DeleteNailSocial(ID);
                     if (intCount == 1)
                     {
@@ -150,7 +151,7 @@ namespace WebNails.Admin.Controllers
                         var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                         _actionDetailRepository.InitConnection(sqlConnect);
-                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_SOCIAL", UserID = objAccount.ID, Description = "Xóa Social - " + Session["Cur_NailName"], DataJson = "{ID:" + ID + "}", Field = "Nail_ID", FieldValue = (int)Session["Cur_NailID"] });
+                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_SOCIAL", UserID = objAccount.ID, Description = "Xóa Social - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item), Field = "Nail_ID", FieldValue = item.ID });
 
                         return Json("Xóa thành công Social", JsonRequestBehavior.AllowGet);
                     }

@@ -130,6 +130,7 @@ namespace WebNails.Admin.Controllers
                 using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
                 {
                     _nailPricesRepository.InitConnection(sqlConnect);
+                    var item = _nailPricesRepository.GetNailPricesByID(ID);
                     var intCount = _nailPricesRepository.DeleteNailPrices(ID);
                     if (intCount == 1)
                     {
@@ -137,7 +138,7 @@ namespace WebNails.Admin.Controllers
                         var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                         _actionDetailRepository.InitConnection(sqlConnect);
-                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_PRICES", UserID = objAccount.ID, Description = "Xóa Prices List - " + Session["Cur_NailName"], DataJson = "{ID:" + ID + "}", Field = "Nail_ID", FieldValue = (int)Session["Cur_NailID"] });
+                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_PRICES", UserID = objAccount.ID, Description = "Xóa Prices List - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item), Field = "Nail_ID", FieldValue = item.Nail_ID });
 
                         return Json("Xóa thành công Prices List", JsonRequestBehavior.AllowGet);
                     }

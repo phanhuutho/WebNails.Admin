@@ -44,7 +44,7 @@ namespace WebNails.Admin.Repositories
 
         public int SaveChange(NailPrices item)
         {
-            var intCount = _sqlConnection.Execute(@"spNailPrices_Credit",
+            var intID = _sqlConnection.Query<int>(@"spNailPrices_Credit",
                     new
                     {
                         intID = item.ID,
@@ -52,8 +52,8 @@ namespace WebNails.Admin.Repositories
                         intPosition = item.Position,
                         strURL = item.URL,
                         bitStatus = item.Status
-                    }, commandType: CommandType.StoredProcedure);
-            return intCount;
+                    }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(0).FirstOrDefault();
+            return intID;
         }
     }
 }
