@@ -51,7 +51,7 @@ namespace WebNails.Admin.Controllers
                     if (intCount == 1)
                     {
                         _actionDetailRepository.InitConnection(sqlConnect);
-                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_ACCOUNT", UserID = objAccount.ID, Description = "Đổi mật khẩu", DataJson = "{ID:" + objAccount.ID + "}" });
+                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_ACCOUNT", UserID = objAccount.ID, Description = "Đổi mật khẩu", DataJson = "{ID:" + objAccount.ID + "}", Field = "ID", FieldValue = objAccount.ID });
 
                         return Json("Đổi mật khẩu thành công", JsonRequestBehavior.AllowGet);
                     }
@@ -81,7 +81,7 @@ namespace WebNails.Admin.Controllers
                     if (intCount == 1)
                     {
                         _actionDetailRepository.InitConnection(sqlConnect);
-                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_ACCOUNT", UserID = objAccount.ID, Description = "Cập nhật thông tin account", DataJson = "{ID:" + objAccount.ID + ", Fullname:" + model.Fullname + ", Phone:" + model.Phone + "}" });
+                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_ACCOUNT", UserID = objAccount.ID, Description = "Cập nhật thông tin account", DataJson = "{ID:" + objAccount.ID + ", Fullname:" + model.Fullname + ", Phone:" + model.Phone + "}", Field = "ID", FieldValue = objAccount.ID });
 
                         return Json("Cập nhật thông tin thành công", JsonRequestBehavior.AllowGet);
                     }

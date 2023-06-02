@@ -13,6 +13,8 @@ namespace WebNails.Admin.Models
         public string DataJson { get; set; }
         public string Description { get; set; }
         public DateTime DateTimeCreate { get; set; }
+        public string Field { get; set; }
+        public int FieldValue { get; set; }
 
         //
         public string Username { get; set; }

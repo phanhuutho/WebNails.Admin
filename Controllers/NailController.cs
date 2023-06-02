@@ -95,7 +95,7 @@ namespace WebNails.Admin.Controllers
                     var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                     _actionDetailRepository.InitConnection(sqlConnect);
-                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name, DataJson = JsonConvert.SerializeObject(item) });
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name, DataJson = JsonConvert.SerializeObject(item), Field = "ID", FieldValue = item.ID });
 
                     return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name + " thành công", JsonRequestBehavior.AllowGet);
                 }

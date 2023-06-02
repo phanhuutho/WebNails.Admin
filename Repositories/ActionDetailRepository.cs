@@ -22,7 +22,9 @@ namespace WebNails.Admin.Repositories
                         strTable = log.Table,
                         intUserID = log.UserID,
                         strDataJson = log.DataJson,
-                        strDescription = log.Description
+                        strDescription = log.Description,
+                        strField = log.Field,
+                        intFieldValue = log.FieldValue
                     }, commandType: CommandType.StoredProcedure);
             return intCount;
         }
