@@ -89,15 +89,17 @@ namespace WebNails.Admin.Controllers
             {
                 _nailRepository.InitConnection(sqlConnect);
                 var intCount = _nailRepository.SaveChange(item);
-                if (intCount == 1)
+                if (intCount > 0)
                 {
+                    var isCreate = item.ID == 0;
+                    item.ID = isCreate ? intCount : item.ID;
                     _nailAccountRepository.InitConnection(sqlConnect);
                     var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                     _actionDetailRepository.InitConnection(sqlConnect);
-                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name, DataJson = JsonConvert.SerializeObject(item), Field = "ID", FieldValue = item.ID });
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"{(isCreate ? "Thêm" : "Sửa")} thông tin " + item.Name, DataJson = JsonConvert.SerializeObject(item), Field = "ID", FieldValue = item.ID });
 
-                    return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin " + item.Name + " thành công", JsonRequestBehavior.AllowGet);
+                    return Json($"{(isCreate ? "Thêm" : "Sửa")} thông tin " + item.Name + " thành công", JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

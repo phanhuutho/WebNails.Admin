@@ -33,7 +33,7 @@ namespace WebNails.Admin.Repositories
 
         public int SaveChange(Nail item)
         {
-            var intCount = _sqlConnection.Execute(@"spNail_Credit",
+            var intID = _sqlConnection.Query<int>(@"spNail_Credit",
                     new
                     {
                         intID = item.ID,
@@ -51,8 +51,8 @@ namespace WebNails.Admin.Repositories
                         strAboutUs = item.AboutUs,
                         strAboutUsHome = item.AboutUsHome,
                         strBusinessHours = item.BusinessHours
-                    }, commandType: CommandType.StoredProcedure);
-            return intCount;
+                    }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(0).FirstOrDefault();
+            return intID;
         }
     }
 }
