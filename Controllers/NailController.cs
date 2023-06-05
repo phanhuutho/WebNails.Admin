@@ -161,7 +161,7 @@ namespace WebNails.Admin.Controllers
                     //_actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { BusinessHours = objNail.BusinessHours }) });
                     //_actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { AboutUs = objNail.AboutUs }) });
                     //_actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { AboutUsHome = objNail.AboutUsHome }) });
-                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { ID = objNail.ID }) });
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "SyncDataWeb", UserID = objAccount.ID, Description = $"Cập nhật dữ liệu lên website", DataJson = JsonConvert.SerializeObject(new { ID = objNail.ID }), Field = "ID", FieldValue = objNail.ID });
 
                     return Json("Cập nhật dữ liệu lên website thành công !", JsonRequestBehavior.AllowGet);
                 }
