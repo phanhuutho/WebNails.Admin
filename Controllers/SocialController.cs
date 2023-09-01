@@ -117,7 +117,7 @@ namespace WebNails.Admin.Controllers
                     var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                     _actionDetailRepository.InitConnection(sqlConnect);
-                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_SOCIAL", UserID = objAccount.ID, Description = $"{(isCreate ? "Thêm" : "Sửa")} thông tin Social - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item), Field = "Nail_ID", FieldValue = item.ID });
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_SOCIAL", UserID = objAccount.ID, Description = $"{(isCreate ? "Thêm" : "Sửa")} thông tin Social - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item), Field = "Nail_ID", FieldValue = item.Nail_ID });
 
                     return Json($"{(isCreate ? "Thêm" : "Sửa")} thông tin Social - " + Session["Cur_NailName"] + " thành công", JsonRequestBehavior.AllowGet);
                 }
@@ -153,7 +153,7 @@ namespace WebNails.Admin.Controllers
                         var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
 
                         _actionDetailRepository.InitConnection(sqlConnect);
-                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_SOCIAL", UserID = objAccount.ID, Description = "Xóa Social - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item), Field = "Nail_ID", FieldValue = item.ID });
+                        _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_SOCIAL", UserID = objAccount.ID, Description = "Xóa Social - " + Session["Cur_NailName"], DataJson = JsonConvert.SerializeObject(item), Field = "Nail_ID", FieldValue = item.Nail_ID });
 
                         return Json("Xóa thành công Social", JsonRequestBehavior.AllowGet);
                     }
