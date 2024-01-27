@@ -149,6 +149,7 @@
     <Compile Include="Controllers\NailController.cs" />
     <Compile Include="Controllers\PricesController.cs" />
     <Compile Include="Controllers\SocialController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -160,6 +161,7 @@
     <Compile Include="Interfaces\INailRepository.cs" />
     <Compile Include="Interfaces\INailSocialRepository.cs" />
     <Compile Include="Interfaces\ISocialRepository.cs" />
+    <Compile Include="Interfaces\IUserSiteRepository.cs" />
     <Compile Include="Models\ActionDetail.cs" />
     <Compile Include="Models\JsonInfo.cs" />
     <Compile Include="Models\JsonCoupon.cs" />
@@ -172,6 +174,7 @@
     <Compile Include="Models\NailPrices.cs" />
     <Compile Include="Models\NailSocial.cs" />
     <Compile Include="Models\Social.cs" />
+    <Compile Include="Models\UserSite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ActionDetailRepository.cs" />
     <Compile Include="Repositories\NailCouponRepository.cs" />
@@ -180,6 +183,7 @@
     <Compile Include="Repositories\NailRepository.cs" />
     <Compile Include="Repositories\NailSocialRepository.cs" />
     <Compile Include="Repositories\SocialRepository.cs" />
+    <Compile Include="Repositories\UserSiteRepository.cs" />
     <Compile Include="Utilities\Commons.cs" />
     <Compile Include="Utilities\MailHelper.cs" />
     <Compile Include="Utilities\PagingHelper.cs" />
@@ -1373,6 +1377,9 @@
     <Content Include="Views\History\DataDetail_Coupon.cshtml" />
     <Content Include="Views\History\DataDetail_Social.cshtml" />
     <Content Include="Views\History\DataDetail_Prices.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\Credit.cshtml" />
+    <Content Include="Views\User\GetTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

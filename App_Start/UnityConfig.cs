@@ -23,6 +23,7 @@ namespace WebNails.Admin
             container.RegisterType<INailRepository, NailRepository>();
             container.RegisterType<ISocialRepository, SocialRepository>();
             container.RegisterType<IActionDetailRepository, ActionDetailRepository>();
+            container.RegisterType<IUserSiteRepository, UserSiteRepository>();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }
     }
