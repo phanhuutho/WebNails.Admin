@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace WebNails.Admin.Models
 {
@@ -16,5 +17,9 @@ namespace WebNails.Admin.Models
         public bool IsDelete { get; set; }
         public DateTime DateTimeCreate { get; set; }
         public DateTime DateTimeDelete { get; set; }
+
+        //Mapping Nail
+        public string Domain { get; set; }
+        public List<SelectListItem> Nails { get; set; }
     }
 }

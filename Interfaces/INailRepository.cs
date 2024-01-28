@@ -12,6 +12,7 @@ namespace WebNails.Admin.Interfaces
     {
         Nail GetNailByID(int ID);
         IEnumerable<Nail> GetNails(DynamicParameters param);
+        List<Nail> GetNails();
         int SaveChange(Nail item);
     }
 }

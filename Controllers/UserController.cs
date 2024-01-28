@@ -15,9 +15,11 @@ namespace WebNails.Admin.Controllers
     public class UserController : Controller
     {
         private IUserSiteRepository _userSiteRepository;
-        public UserController(IUserSiteRepository userSiteRepository)
+        private INailRepository _nailRepository;
+        public UserController(IUserSiteRepository userSiteRepository, INailRepository nailRepository)
         {
             this._userSiteRepository = userSiteRepository;
+            this._nailRepository = nailRepository;
         }
         // GET: User
         [Authorize]
@@ -31,7 +33,7 @@ namespace WebNails.Admin.Controllers
                 param.Add("@intSkip", intSkip);
                 param.Add("@intTake", Utilities.PagingHelper.CountSort);
                 param.Add("@strValue", Search);
-                param.Add("@intNail_ID", Nail_ID);
+                param.Add("@intNailID", Nail_ID);
                 param.Add("@intTotalRecord", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 _userSiteRepository.InitConnection(sqlConnect);
@@ -47,16 +49,20 @@ namespace WebNails.Admin.Controllers
         [Authorize]
         public ActionResult Credit(int ID = 0, int Nail_ID = 0)
         {
-            if (ID == 0)
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
-                return View(new UserSite() { ID = 0, Nail_ID = Nail_ID });
-            }
-            else
-            {
-                using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+                _nailRepository.InitConnection(sqlConnect);
+                if (ID == 0)
+                {
+                    Random r = new Random();
+                    int rInt = r.Next(0, 1000000);
+                    return View(new UserSite() { ID = 0, Nail_ID = Nail_ID, Password = rInt.ToString(), Nails = _nailRepository.GetNails().Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Domain }).ToList() });
+                }
+                else
                 {
                     _userSiteRepository.InitConnection(sqlConnect);
                     var objUserSite = _userSiteRepository.GetUserSiteByID(ID);
+                    objUserSite.Nails = _nailRepository.GetNails().Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Domain, Selected = x.ID == objUserSite.Nail_ID }).ToList();
                     return View(objUserSite);
                 }
             }

@@ -26,6 +26,12 @@ namespace WebNails.Admin.Repositories
             return objNails;
         }
 
+        public List<Nail> GetNails()
+        {
+            var objNails = this._sqlConnection.Query<Nail>(@"spNail_GetNailsActive", null, commandType: CommandType.StoredProcedure).ToList();
+            return objNails;
+        }
+
         public void InitConnection(SqlConnection sqlConnection)
         {
             this._sqlConnection = sqlConnection;
