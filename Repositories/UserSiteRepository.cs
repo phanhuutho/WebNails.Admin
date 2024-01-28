@@ -25,18 +25,6 @@ namespace WebNails.Admin.Repositories
             return objUserSite;
         }
 
-        public UserSite GetUserSite(string Username, string Password, int NailID)
-        {
-            var objAccount = this._sqlConnection.Query<UserSite>(@"spUserSite_GetByUsernameAndPassword", new { strUsername = Username, strPassword = Password, intNailID = NailID }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(new UserSite()).FirstOrDefault();
-            return objAccount;
-        }
-
-        public UserSite GetUserSiteByUsername(string Username, int NailID)
-        {
-            var objAccount = this._sqlConnection.Query<UserSite>(@"spUserSite_GetByUsername", new { strUsername = Username, intNailID = NailID }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(new UserSite()).FirstOrDefault();
-            return objAccount;
-        }
-
         public IEnumerable<UserSite> GetUserSites(DynamicParameters param)
         {
             var objUserSite = this._sqlConnection.Query<UserSite>(@"spUserSite_GetUserSites", param, commandType: CommandType.StoredProcedure);
