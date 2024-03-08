@@ -146,6 +146,7 @@
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\NailCodeSaleController.cs" />
     <Compile Include="Controllers\NailController.cs" />
     <Compile Include="Controllers\PricesController.cs" />
     <Compile Include="Controllers\SocialController.cs" />
@@ -155,6 +156,7 @@
     </Compile>
     <Compile Include="Interfaces\IActionDetailRepository.cs" />
     <Compile Include="Interfaces\IConnection.cs" />
+    <Compile Include="Interfaces\INailCodeSaleRepository.cs" />
     <Compile Include="Interfaces\INailCouponRepository.cs" />
     <Compile Include="Interfaces\INailAccountRepository.cs" />
     <Compile Include="Interfaces\INailPricesRepository.cs" />
@@ -170,6 +172,7 @@
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\Nail.cs" />
     <Compile Include="Models\NailAccount.cs" />
+    <Compile Include="Models\NailCodeSale.cs" />
     <Compile Include="Models\NailCoupon.cs" />
     <Compile Include="Models\NailPrices.cs" />
     <Compile Include="Models\NailSocial.cs" />
@@ -177,6 +180,7 @@
     <Compile Include="Models\UserSite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ActionDetailRepository.cs" />
+    <Compile Include="Repositories\NailCodeSaleRepository.cs" />
     <Compile Include="Repositories\NailCouponRepository.cs" />
     <Compile Include="Repositories\NailAccountRepository.cs" />
     <Compile Include="Repositories\NailPricesRepository.cs" />
@@ -1380,6 +1384,9 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\Credit.cshtml" />
     <Content Include="Views\User\GetTable.cshtml" />
+    <Content Include="Views\NailCodeSale\Index.cshtml" />
+    <Content Include="Views\NailCodeSale\Credit.cshtml" />
+    <Content Include="Views\NailCodeSale\GetTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

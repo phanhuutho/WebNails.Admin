@@ -1,0 +1,115 @@
+﻿@model WebNails.Admin.Models.NailCodeSale
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = $"{(Model.ID == 0 ? "Thêm" : "Sửa")} Code Sale";
+}
+
+@section css{
+    <script src="~/Scripts/common.js"></script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h5>@($"{(Model.ID == 0 ? "Thêm" : "Sửa")} Code Sale")</h5>
+            </div>
+            <div class="panel-body">
+                <form id="myForm">
+                    @Html.HiddenFor(model => model.ID)
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.Label("Code", "Code")
+                                @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Sale", "Sale Off")
+                                @Html.EditorFor(model => model.Sale, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Sale, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Status", "Bật/Tắt Image Coupon")
+                                @Html.CheckBoxFor(model => model.Status, new { @class = "checkbox-inline" })
+                                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.Label("ExpireDateFrom", "Expire From")
+                                @Html.EditorFor(model => model.ExpireDateFrom, new { htmlAttributes = new { @class = "form-control", @type = "date", @Value = Model.ExpireDateFrom.ToString("yyyy-MM-dd") } })
+                                @Html.ValidationMessageFor(model => model.ExpireDateFrom, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("ExpireDateTo", "Expire To")
+                                @Html.EditorFor(model => model.ExpireDateTo, new { htmlAttributes = new { @class = "form-control", @type = "date", @Value = Model.ExpireDateTo.ToString("yyyy-MM-dd") } })
+                                @Html.ValidationMessageFor(model => model.ExpireDateTo, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Nail_ID", "Domain")
+                                @Html.DropDownListFor(model => model.Nail_ID, Model.Nails, "Select Domain", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Nail_ID, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group pull-right">
+                                <button type="button" id="btnCancel" class="btn btn-default">Trở về</button>
+                                <span>&nbsp;</span>
+                                <button type="submit" id="btnSubmit" class="btn btn-danger">Cập nhật</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/jquery/jquery.validate.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#myForm").validate({
+                rules: {
+                    Code: "required",
+                    Sale: "required",
+                    ExpireDateFrom: "required",
+                    ExpireDateTo: "required"
+                },
+                messages: {
+                    Code: { required: "Nhập Code" },
+                    Sale: { required: "Nhập Sale Off" },
+                    ExpireDateFrom: { required: "Nhập ngày hiệu lực" },
+                    ExpireDateTo: { required: "Nhập ngày hết hiệu lực" }
+                }
+            });
+
+            $("#myForm").submit(function () {
+                if ($(this).valid()) {
+                    let overlay = new ItpOverlay();
+                    $.ajax({
+                        type: "POST",
+                        url: "/NailCodeSale/Credit",
+                        data: $(this).serialize(),
+                        beforeSend: function () {
+                            overlay.show("body");
+                        },
+                        success: function (result) {
+                            AlertMessage(result);
+                        },
+                        complete: function (data) {
+                            overlay.hide("body");
+                        }
+                    });
+                }
+                return false;
+            });
+
+            $("#btnCancel").on("click", function () {
+                location.href = '/NailCodeSale';
+            });
+        });
+
+    </script>
+}

@@ -1,0 +1,63 @@
+﻿@model IEnumerable<WebNails.Admin.Models.NailCodeSale>
+
+@{
+    var indexCurrent = WebNails.Admin.Utilities.PagingHelper.CurrentIndex(WebNails.Admin.Utilities.PagingHelper.CountSort, WebNails.Admin.Utilities.PagingHelper.PageIndex);
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive table-primary">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Domain</th>
+                        <th>Code</th>
+                        <th>Sale Off</th>
+                        <th>Status</th>
+                        <th>Expired From</th>
+                        <th>Expired To</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@indexCurrent</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Domain)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Code)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Sale)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                @(string.Format("{0:MM/dd/yyyy}", item.ExpireDateFrom))
+                            </td>
+                            <td>
+                                @(string.Format("{0:MM/dd/yyyy}", item.ExpireDateTo))
+                            </td>
+                            <td>
+                                @Html.ActionLink("Chỉnh sửa thông tin", "Credit", new { ID = item.ID }, htmlAttributes: new { @class = "btn btn-danger btn-xs" })
+                                <button class="btn btn-warning btn-xs" id="btDelete" onclick="Delete(@(item.ID))">Xóa</button>
+                            </td>
+                        </tr>
+                        indexCurrent++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-left">
+        @Html.Raw(WebNails.Admin.Utilities.PagingHelper.Page(ViewBag.Count, 5, WebNails.Admin.Utilities.PagingHelper.CountSort, "pagination"))
+    </div>
+</div>

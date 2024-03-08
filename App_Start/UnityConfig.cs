@@ -20,6 +20,7 @@ namespace WebNails.Admin
             container.RegisterType<INailCouponRepository, NailCouponRepository>();
             container.RegisterType<INailPricesRepository, NailPricesRepository>();
             container.RegisterType<INailAccountRepository, NailAccountRepository>();
+            container.RegisterType<INailCodeSaleRepository, NailCodeSaleRepository>();
             container.RegisterType<INailRepository, NailRepository>();
             container.RegisterType<ISocialRepository, SocialRepository>();
             container.RegisterType<IActionDetailRepository, ActionDetailRepository>();
