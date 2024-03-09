@@ -31,6 +31,11 @@
                                 @Html.ValidationMessageFor(model => model.Sale, "", new { @class = "text-danger" })
                             </div>
                             <div class="form-group">
+                                @Html.Label("MinAmountSaleOff", "Min Amount Sale Off")
+                                @Html.EditorFor(model => model.MinAmountSaleOff, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.MinAmountSaleOff, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
                                 @Html.Label("Status", "Checkmark to active")
                                 @Html.CheckBoxFor(model => model.Status, new { @class = "checkbox-inline" })
                                 @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })

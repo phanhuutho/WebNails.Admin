@@ -27,7 +27,6 @@ namespace WebNails.Admin.Models
         public string AboutUsHome { get; set; }
         [DataType(DataType.MultilineText)]
         public string BusinessHours { get; set; }
-        public int MinAmountSaleOff { get; set; }
         //
         public DateTime DateTimeCreate { get; set; }
     }

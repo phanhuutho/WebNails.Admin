@@ -47,7 +47,8 @@ namespace WebNails.Admin.Repositories
                         bitStatus = item.Status,
                         strExpireDateFrom = item.ExpireDateFrom,
                         strExpireDateTo = item.ExpireDateTo,
-                        intNail_ID = item.Nail_ID
+                        intNail_ID = item.Nail_ID,
+                        intMinAmountSaleOff = item.MinAmountSaleOff
                     }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(0).FirstOrDefault();
             return intID;
         }

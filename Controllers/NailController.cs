@@ -143,7 +143,6 @@ namespace WebNails.Admin.Controllers
                         LinkGoogleMapAddress = objNail.LinkGoogleMapAddress ?? "",
                         LinkIFrameGoogleMap = objNail.LinkIFrameGoogleMap ?? "",
                         ShowCoupon = objNail.Coupons,
-                        MinAmountSaleOff = objNail.MinAmountSaleOff,
                         Coupons = objNailCoupon,
                         Prices = objNailPrices,
                         Telegram = objNailSocial.Where(x => x.Title == "Telegram").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault(),

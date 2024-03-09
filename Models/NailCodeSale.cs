@@ -18,6 +18,7 @@ namespace WebNails.Admin.Models
         public DateTime ExpireDateFrom { get; set; }
         public DateTime ExpireDateTo { get; set; }
         public int Nail_ID { get; set; }
+        public int MinAmountSaleOff { get; set; }
 
         //
         public string Domain { get; set; }

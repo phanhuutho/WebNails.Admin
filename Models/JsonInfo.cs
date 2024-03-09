@@ -17,7 +17,6 @@ namespace WebNails.Admin.Models
         public string LinkGoogleMapAddress { get; set; }
         public string LinkIFrameGoogleMap { get; set; }
         public bool ShowCoupon { get; set; }
-        public int MinAmountSaleOff { get; set; }
         public List<JsonCoupon> Coupons { get; set; }
         public List<JsonPrice> Prices { get; set; }
         public JsonSocial Telegram { get; set; }

@@ -56,8 +56,7 @@ namespace WebNails.Admin.Repositories
                         bitCoupons = item.Coupons,
                         strAboutUs = item.AboutUs,
                         strAboutUsHome = item.AboutUsHome,
-                        strBusinessHours = item.BusinessHours,
-                        intMinAmountSaleOff = item.MinAmountSaleOff
+                        strBusinessHours = item.BusinessHours
                     }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(0).FirstOrDefault();
             return intID;
         }
