@@ -165,6 +165,7 @@
     <Compile Include="Interfaces\ISocialRepository.cs" />
     <Compile Include="Interfaces\IUserSiteRepository.cs" />
     <Compile Include="Models\ActionDetail.cs" />
+    <Compile Include="Models\InfoNail.cs" />
     <Compile Include="Models\JsonInfo.cs" />
     <Compile Include="Models\JsonCoupon.cs" />
     <Compile Include="Models\JsonPrice.cs" />
