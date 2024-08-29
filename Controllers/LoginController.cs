@@ -21,17 +21,18 @@ namespace WebNails.Admin.Controllers
         }
         // GET: administrator/Login
         [AllowAnonymous]
-        public ActionResult Index()
+        public ActionResult Index(int forcelogin = 0)
         {
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
+            ViewBag.ForceLogin = forcelogin;
             return View();
         }
 
         [HttpPost]
-        public ActionResult Index(LoginModel model)
+        public ActionResult Index(LoginModel model, int forcelogin = 0)
         {
 
             var strMD5Password = Sercurity.Md5(model.Password);
@@ -46,18 +47,31 @@ namespace WebNails.Admin.Controllers
                 var objAccount = _nailAccountRepository.GetNailAccount(model.Username, strMD5Password);
                 if (objAccount.ID != 0)
                 {
-                    var ValidationCode = Commons.RandomCodeNumber(6);
-                    Session["User_" + model.Username + "_ValidationCode"] = ValidationCode;
-                    Session["User_" + model.Username + "_Email"] = objAccount.Email;
-                    Session["User_" + model.Username + "_Role"] = objAccount.Role;
-                    MailHelper.SendMail(objAccount.Email, "Verify Code Login", "Access Code Login: " + ValidationCode);
-                    if (queryDictionary.Count > 0)
+                    if (forcelogin == 1)
                     {
-                        return Json(new { ReturnUrl = queryDictionary.Get("ReturnUrl"), IsLogin = true, Message = "", Username = model.Username, ValidationCode = Sercurity.Md5(ValidationCode) }, JsonRequestBehavior.AllowGet);
-                    }
+                        var SessionRole = string.Format("{0}", Session["User_" + model.Username + "_Role"]);
+                        var ticket = new FormsAuthenticationTicket(1, model.Username, System.DateTime.Now, System.DateTime.Now.AddHours(1), true, SessionRole ?? "", FormsAuthentication.FormsCookiePath);
+                        var strEncrypt = FormsAuthentication.Encrypt(ticket);
+                        var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, strEncrypt);
+                        Response.Cookies.Add(cookie);
+
+                        return Json(new { ReturnUrl = "/ControlPanel/Index", IsLogin = true, Message = "" }, JsonRequestBehavior.AllowGet);
+                    }    
                     else
                     {
-                        return Json(new { ReturnUrl = "/ControlPanel/Index", IsLogin = true, Message = "", Username = model.Username, ValidationCode = Sercurity.Md5(ValidationCode) }, JsonRequestBehavior.AllowGet);
+                        var ValidationCode = Commons.RandomCodeNumber(6);
+                        Session["User_" + model.Username + "_ValidationCode"] = ValidationCode;
+                        Session["User_" + model.Username + "_Email"] = objAccount.Email;
+                        Session["User_" + model.Username + "_Role"] = objAccount.Role;
+                        MailHelper.SendMail(objAccount.Email, "Verify Code Login", "Access Code Login: " + ValidationCode);
+                        if (queryDictionary.Count > 0)
+                        {
+                            return Json(new { ReturnUrl = queryDictionary.Get("ReturnUrl"), IsLogin = true, Message = "", Username = model.Username, ValidationCode = Sercurity.Md5(ValidationCode) }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            return Json(new { ReturnUrl = "/ControlPanel/Index", IsLogin = true, Message = "", Username = model.Username, ValidationCode = Sercurity.Md5(ValidationCode) }, JsonRequestBehavior.AllowGet);
+                        }
                     }
                 }
                 else

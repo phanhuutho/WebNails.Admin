@@ -1,6 +1,7 @@
 ﻿@model WebNails.Admin.Models.LoginModel
 @{
     Layout = null;
+    int forcelogin = (int)ViewBag.ForceLogin;
 }
 
 <!DOCTYPE html>
@@ -72,6 +73,7 @@
                         @using (Html.BeginForm("Index", "Login", FormMethod.Post, new { @id = "formLogin", @action = "" }))
                         {
                             @Html.AntiForgeryToken()
+                            @Html.Hidden("forcelogin", forcelogin)
                             <fieldset>
                                 <div class="form-group input-group">
                                     <span class="input-group-addon"><i class="fa fa-user" aria-hidden="false"></i></span>
@@ -127,6 +129,7 @@
     <script src="~/Scripts/jquery.validate.min.js"></script>
 
     <script type="text/javascript">
+        var forcelogin = parseInt('@forcelogin');
 
         function AlertMessage(strMessage) {
             $('#alert-message').html("");
@@ -167,6 +170,9 @@
                             }
                             else {
                                 var UrlRedirect = '/Login/ConfirmLoginByCode?Username=' + result.Username + '&ValidationCode=' + result.ValidationCode + "&ReturnUrl=" + result.ReturnUrl;
+                                if (forcelogin == 1) {
+                                    UrlRedirect = result.ReturnUrl;
+                                }
                                 RedirecToUrl(UrlRedirect);
                             }
                         },
