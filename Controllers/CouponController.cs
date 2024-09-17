@@ -19,12 +19,14 @@ namespace WebNails.Admin.Controllers
         private INailRepository _nailRepository;
         private IActionDetailRepository _actionDetailRepository;
         private INailAccountRepository _nailAccountRepository;
-        public CouponController(INailCouponRepository nailCouponRepository, INailRepository nailRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository)
+        private INailApiRepository _nailApiRepository;
+        public CouponController(INailCouponRepository nailCouponRepository, INailRepository nailRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository, INailApiRepository nailApiRepository)
         {
             _nailCouponRepository = nailCouponRepository;
             _nailRepository = nailRepository;
             _actionDetailRepository = actionDetailRepository;
             _nailAccountRepository = nailAccountRepository;
+            _nailApiRepository = nailApiRepository;
         }
         // GET: Coupon
         [Authorize]
@@ -64,23 +66,37 @@ namespace WebNails.Admin.Controllers
         [Authorize]
         public ActionResult Credit(int ID = 0)
         {
-            if(Session["Cur_NailID"] == null || Session["Cur_Domain"] == null || Session["Cur_NailName"] == null)
+            if (Session["Cur_NailID"] == null || Session["Cur_Domain"] == null || Session["Cur_NailName"] == null)
             {
                 return RedirectToAction("Index", "Nail");
-            }    
-            if (ID == 0)
-            {
-                return View(new NailCoupon() { ID = 0, Nail_ID = (int)Session["Cur_NailID"] });
             }
-            else
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
-                using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+                _nailRepository.InitConnection(sqlConnect);
+                _nailApiRepository.InitConnection(sqlConnect);
+
+                var intNailID = int.Parse(Session["Cur_NailID"].ToString());
+                var objNail = _nailRepository.GetNailByID(intNailID);
+                if (objNail != null && objNail.NailApi_ID != null && objNail.NailApi_ID > 0)
+                {
+                    var objNailApi = _nailApiRepository.GetNailApiByID(objNail.NailApi_ID ?? 0);
+                    if (!string.IsNullOrEmpty(objNailApi.Url) && objNailApi.Token != null)
+                    {
+                        return Redirect(string.Format("{0}/Coupon/Credit/{1}?token={2}&Cur_NailID={3}&Username={4}", objNailApi.Url, ID, objNailApi.Token.ToString(), intNailID, User.Identity.Name));
+                    }
+                }
+
+                if (ID == 0)
+                {
+                    return View(new NailCoupon() { ID = 0, Nail_ID = (int)Session["Cur_NailID"] });
+                }
+                else
                 {
                     _nailCouponRepository.InitConnection(sqlConnect);
                     var objNailCoupon = _nailCouponRepository.GetNailCouponByID(ID);
                     return View(objNailCoupon);
                 }
-            }
+            }    
         }
 
         [Authorize]
@@ -111,6 +127,42 @@ namespace WebNails.Admin.Controllers
                 else
                 {
                     return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Coupon - " + Session["Cur_NailName"] + " thất bại", JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+
+        public ActionResult ApiCredit(int ID)
+        {
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+            {
+                _nailCouponRepository.InitConnection(sqlConnect);
+                var objNailCoupon = _nailCouponRepository.GetNailCouponByID(ID);
+                return Json(objNailCoupon, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ApiCredit(NailCoupon item, string Cur_NailName, string Username)
+        {
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+            {
+                _nailCouponRepository.InitConnection(sqlConnect);
+                var intCount = _nailCouponRepository.SaveChange(item);
+                if (intCount > 0)
+                {
+                    var isCreate = item.ID == 0;
+                    item.ID = isCreate ? intCount : item.ID;
+                    _nailAccountRepository.InitConnection(sqlConnect);
+                    var objAccount = _nailAccountRepository.GetNailAccountByUsername(Username);
+
+                    _actionDetailRepository.InitConnection(sqlConnect);
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_COUPON", UserID = objAccount.ID, Description = $"{(isCreate ? "Thêm" : "Sửa")} thông tin Coupon - " + Cur_NailName, DataJson = JsonConvert.SerializeObject(item), Field = "Nail_ID", FieldValue = item.Nail_ID });
+
+                    return Json(1);
+                }
+                else
+                {
+                    return Json(0);
                 }
             }
         }

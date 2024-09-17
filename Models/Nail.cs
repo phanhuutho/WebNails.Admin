@@ -29,5 +29,7 @@ namespace WebNails.Admin.Models
         public string BusinessHours { get; set; }
         //
         public DateTime DateTimeCreate { get; set; }
+        //
+        public int? NailApi_ID { get; set; }
     }
 }

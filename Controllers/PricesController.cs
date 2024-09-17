@@ -19,12 +19,14 @@ namespace WebNails.Admin.Controllers
         private INailRepository _nailRepository;
         private IActionDetailRepository _actionDetailRepository;
         private INailAccountRepository _nailAccountRepository;
-        public PricesController(INailPricesRepository nailPricesRepository, INailRepository nailRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository)
+        private INailApiRepository _nailApiRepository;
+        public PricesController(INailPricesRepository nailPricesRepository, INailRepository nailRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository, INailApiRepository nailApiRepository)
         {
             _nailPricesRepository = nailPricesRepository;
             _nailRepository = nailRepository;
             _actionDetailRepository = actionDetailRepository;
             _nailAccountRepository = nailAccountRepository;
+            _nailApiRepository = nailApiRepository;
         }
         // GET: Prices
         [Authorize]
@@ -68,13 +70,27 @@ namespace WebNails.Admin.Controllers
             {
                 return RedirectToAction("Index", "Nail");
             }
-            if (ID == 0)
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
-                return View(new NailPrices() { ID = 0, Nail_ID = (int)Session["Cur_NailID"] });
-            }
-            else
-            {
-                using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+                _nailRepository.InitConnection(sqlConnect);
+                _nailApiRepository.InitConnection(sqlConnect);
+
+                var intNailID = int.Parse(Session["Cur_NailID"].ToString());
+                var objNail = _nailRepository.GetNailByID(intNailID);
+                if (objNail != null && objNail.NailApi_ID != null && objNail.NailApi_ID > 0)
+                {
+                    var objNailApi = _nailApiRepository.GetNailApiByID(objNail.NailApi_ID ?? 0);
+                    if (!string.IsNullOrEmpty(objNailApi.Url) && objNailApi.Token != null)
+                    {
+                        return Redirect(string.Format("{0}/Prices/Credit/{1}?token={2}&Cur_NailID={3}&Username={4}", objNailApi.Url, ID, objNailApi.Token.ToString(), intNailID, User.Identity.Name));
+                    }
+                }
+
+                if (ID == 0)
+                {
+                    return View(new NailPrices() { ID = 0, Nail_ID = (int)Session["Cur_NailID"] });
+                }
+                else
                 {
                     _nailPricesRepository.InitConnection(sqlConnect);
                     var objNailPrices = _nailPricesRepository.GetNailPricesByID(ID);
@@ -111,6 +127,42 @@ namespace WebNails.Admin.Controllers
                 else
                 {
                     return Json($"{(item.ID == 0 ? "Thêm" : "Sửa")} thông tin Prices List - " + Session["Cur_NailName"] + " thất bại", JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+
+        public ActionResult ApiCredit(int ID)
+        {
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+            {
+                _nailPricesRepository.InitConnection(sqlConnect);
+                var objNailPrices = _nailPricesRepository.GetNailPricesByID(ID);
+                return Json(objNailPrices, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ApiCredit(NailPrices item, string Cur_NailName, string Username)
+        {
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+            {
+                _nailPricesRepository.InitConnection(sqlConnect);
+                var intCount = _nailPricesRepository.SaveChange(item);
+                if (intCount > 0)
+                {
+                    var isCreate = item.ID == 0;
+                    item.ID = isCreate ? intCount : item.ID;
+                    _nailAccountRepository.InitConnection(sqlConnect);
+                    var objAccount = _nailAccountRepository.GetNailAccountByUsername(Username);
+
+                    _actionDetailRepository.InitConnection(sqlConnect);
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL_PRICES", UserID = objAccount.ID, Description = $"{(isCreate ? "Thêm" : "Sửa")} thông tin Prices List - " + Cur_NailName, DataJson = JsonConvert.SerializeObject(item), Field = "Nail_ID", FieldValue = item.Nail_ID });
+
+                    return Json(1);
+                }
+                else
+                {
+                    return Json(0);
                 }
             }
         }

@@ -6,6 +6,9 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using WebNails.Admin.Interfaces;
@@ -22,7 +25,8 @@ namespace WebNails.Admin.Controllers
         private ISocialRepository _socialRepository;
         private IActionDetailRepository _actionDetailRepository;
         private INailAccountRepository _nailAccountRepository;
-        public NailController(INailRepository nailRepository, INailCouponRepository nailCouponRepository, INailPricesRepository nailPricesRepository, ISocialRepository socialRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository)
+        private INailApiRepository _nailApiRepository;
+        public NailController(INailRepository nailRepository, INailCouponRepository nailCouponRepository, INailPricesRepository nailPricesRepository, ISocialRepository socialRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository, INailApiRepository nailApiRepository)
         {
             _nailRepository = nailRepository;
             _nailCouponRepository = nailCouponRepository;
@@ -30,6 +34,7 @@ namespace WebNails.Admin.Controllers
             _socialRepository = socialRepository;
             _actionDetailRepository = actionDetailRepository;
             _nailAccountRepository = nailAccountRepository;
+            _nailApiRepository = nailApiRepository;
         }
 
         // GET: Nail
@@ -63,17 +68,28 @@ namespace WebNails.Admin.Controllers
         [Authorize]
         public ActionResult Credit(int ID = 0)
         {
-            if(ID == 0)
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
-                Session.Add("Cur_Domain","Temp");
-                return View(new Nail() { ID = 0, Name = "", GUID = Guid.NewGuid() });
-            }
-            else
-            {
-                using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+                if (ID == 0)
                 {
+                    Session.Add("Cur_Domain", "Temp");
+                    return View(new Nail() { ID = 0, Name = "", GUID = Guid.NewGuid() });
+                }
+                else
+                {
+                    _nailApiRepository.InitConnection(sqlConnect);
                     _nailRepository.InitConnection(sqlConnect);
                     var objNail = _nailRepository.GetNailByID(ID);
+
+                    if (objNail != null && objNail.NailApi_ID != null && objNail.NailApi_ID > 0)
+                    {
+                        var objNailApi = _nailApiRepository.GetNailApiByID(objNail.NailApi_ID ?? 0);
+                        if (!string.IsNullOrEmpty(objNailApi.Url) && objNailApi.Token != null)
+                        {
+                            return Redirect(string.Format("{0}/Nail/Credit/{1}?token={2}&Cur_NailID={3}&Username={4}", objNailApi.Url, ID, objNailApi.Token.ToString(), objNail.ID, User.Identity.Name));
+                        }
+                    }
+
                     Session.Add("Cur_Domain", objNail.Domain);
                     return View(objNail);
                 }
@@ -108,8 +124,45 @@ namespace WebNails.Admin.Controllers
             }    
         }
 
+        public ActionResult ApiCredit(int ID)
+        {
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+            {
+                _nailRepository.InitConnection(sqlConnect);
+                var objNail = _nailRepository.GetNailByID(ID);
+                return Json(objNail, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ApiCredit(Nail item, string Username)
+        {
+            using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
+            {
+                _nailRepository.InitConnection(sqlConnect);
+                var intCount = _nailRepository.SaveChange(item);
+                if (intCount > 0)
+                {
+                    var isCreate = item.ID == 0;
+                    item.ID = isCreate ? intCount : item.ID;
+                    _nailAccountRepository.InitConnection(sqlConnect);
+                    var objAccount = _nailAccountRepository.GetNailAccountByUsername(Username);
+
+                    _actionDetailRepository.InitConnection(sqlConnect);
+                    _actionDetailRepository.ActionDetailLog(new ActionDetail { Table = "NAIL", UserID = objAccount.ID, Description = $"{(isCreate ? "Thêm" : "Sửa")} thông tin " + item.Name, DataJson = JsonConvert.SerializeObject(item), Field = "ID", FieldValue = item.ID });
+
+                    return Json(1);
+                }
+                else
+                {
+                    return Json(0);
+                }
+            }
+        }
+
+
         [Authorize]
-        public ActionResult SyncDataWeb(int ID)
+        public async Task<ActionResult> SyncDataWeb(int ID)
         {
             if (ID == 0)
             {
@@ -151,7 +204,28 @@ namespace WebNails.Admin.Controllers
                         Twitter = objNailSocial.Where(x => x.Title == "Twitter").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault(),
                         Youtube = objNailSocial.Where(x => x.Title == "Youtube").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault()
                     };
-                    Commons.GenerateDataWeb(jsonInfo, objNail.BusinessHours, objNail.AboutUs, objNail.AboutUsHome, objNail.Domain, ConfigurationManager.AppSettings["VirtualData"]);
+                    
+                    if (objNail.NailApi_ID != null && objNail.NailApi_ID > 0)
+                    {
+                        _nailApiRepository.InitConnection(sqlConnect);
+                        var ApiDomain = _nailApiRepository.GetNailApiByID(objNail.NailApi_ID ?? 0);
+                        if (ApiDomain != null && ApiDomain.Token != null && !string.IsNullOrEmpty(ApiDomain.Url))
+                        {
+                            var urlSendData = string.Format("{0}/Nail/SyncDataWeb?token={1}&domain={2}", ApiDomain.Url, ApiDomain.Token.ToString(), objNail.Domain);
+                            var dataJson = new
+                            {
+                                jsonInfo,
+                                txtBusinessHours = objNail.BusinessHours,
+                                txtAboutUs = objNail.AboutUs,
+                                txtAboutUsHome = objNail.AboutUsHome
+                            };
+                            var result = await PostStringJsonFromURL(urlSendData, JsonConvert.SerializeObject(dataJson));
+                        }
+                    }   
+                    else
+                    {
+                        Commons.GenerateDataWeb(jsonInfo, objNail.BusinessHours, objNail.AboutUs, objNail.AboutUsHome, objNail.Domain, ConfigurationManager.AppSettings["VirtualData"]);
+                    }    
 
                     _nailAccountRepository.InitConnection(sqlConnect);
                     var objAccount = _nailAccountRepository.GetNailAccountByUsername(User.Identity.Name);
@@ -186,6 +260,18 @@ namespace WebNails.Admin.Controllers
                     return Json(new { CheckPassword = false, Message = "Mật khẩu không chính xác" }, JsonRequestBehavior.AllowGet);
                 }
             }    
+        }
+
+        private async Task<string> PostStringJsonFromURL(string url, string dataJson)
+        {
+            var requestContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.PostAsync(url, requestContent);
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadAsStringAsync();
+                return result;
+            }
         }
     }
 }
