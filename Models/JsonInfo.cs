@@ -24,5 +24,6 @@ namespace WebNails.Admin.Models
         public JsonSocial Instagram { get; set; }
         public JsonSocial Twitter { get; set; }
         public JsonSocial Youtube { get; set; }
+        public string Token { get; set; }
     }
 }

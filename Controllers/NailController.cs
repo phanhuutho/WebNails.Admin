@@ -202,7 +202,8 @@ namespace WebNails.Admin.Controllers
                         Facebook = objNailSocial.Where(x => x.Title == "Facebook").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault(),
                         Instagram = objNailSocial.Where(x => x.Title == "Instagram").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault(),
                         Twitter = objNailSocial.Where(x => x.Title == "Twitter").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault(),
-                        Youtube = objNailSocial.Where(x => x.Title == "Youtube").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault()
+                        Youtube = objNailSocial.Where(x => x.Title == "Youtube").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault(),
+                        Token = ""
                     };
                     
                     if (objNail.NailApi_ID != null && objNail.NailApi_ID > 0)
@@ -211,6 +212,7 @@ namespace WebNails.Admin.Controllers
                         var ApiDomain = _nailApiRepository.GetNailApiByID(objNail.NailApi_ID ?? 0);
                         if (ApiDomain != null && ApiDomain.Token != null && !string.IsNullOrEmpty(ApiDomain.Url))
                         {
+                            jsonInfo.Token = ApiDomain.Token.ToString();
                             var urlSendData = string.Format("{0}/Nail/SyncDataWeb?token={1}&domain={2}", ApiDomain.Url, ApiDomain.Token.ToString(), objNail.Domain);
                             var dataJson = new
                             {
