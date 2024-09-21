@@ -19,6 +19,7 @@ namespace WebNails.Admin.Controllers
 {
     public class NailController : Controller
     {
+        private readonly string TokenKeyAPI = ConfigurationManager.AppSettings["TokenKeyAPI"];
         private INailRepository _nailRepository;
         private INailCouponRepository _nailCouponRepository;
         private INailPricesRepository _nailPricesRepository;
@@ -86,7 +87,10 @@ namespace WebNails.Admin.Controllers
                         var objNailApi = _nailApiRepository.GetNailApiByID(objNail.NailApi_ID ?? 0);
                         if (!string.IsNullOrEmpty(objNailApi.Url) && objNailApi.Token != null)
                         {
-                            return Redirect(string.Format("{0}/Nail/Credit/{1}?token={2}&Cur_NailID={3}&Username={4}", objNailApi.Url, ID, objNailApi.Token.ToString(), objNail.ID, User.Identity.Name));
+                            var Token = new { Token = objNailApi.Token, Domain = objNail.Domain, TimeExpire = DateTime.Now.AddMinutes(5) };
+                            var jsonStringToken = JsonConvert.SerializeObject(Token);
+                            var strEncrypt = Sercurity.EncryptString(TokenKeyAPI, jsonStringToken);
+                            return Redirect(string.Format("{0}/Nail/Credit/{1}?token={2}&Cur_NailID={3}&Username={4}", objNailApi.Url, ID, strEncrypt, objNail.ID, User.Identity.Name));
                         }
                     }
 
@@ -124,6 +128,7 @@ namespace WebNails.Admin.Controllers
             }    
         }
 
+        [Token]
         public ActionResult ApiCredit(int ID)
         {
             using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
@@ -134,6 +139,7 @@ namespace WebNails.Admin.Controllers
             }
         }
 
+        [Token]
         [HttpPost]
         public ActionResult ApiCredit(Nail item, string Username)
         {

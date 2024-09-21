@@ -10,11 +10,13 @@ using System.Web;
 using System.Web.Mvc;
 using WebNails.Admin.Interfaces;
 using WebNails.Admin.Models;
+using WebNails.Admin.Utilities;
 
 namespace WebNails.Admin.Controllers
 {
     public class PricesController : Controller
     {
+        private readonly string TokenKeyAPI = ConfigurationManager.AppSettings["TokenKeyAPI"];
         private INailPricesRepository _nailPricesRepository;
         private INailRepository _nailRepository;
         private IActionDetailRepository _actionDetailRepository;
@@ -82,7 +84,10 @@ namespace WebNails.Admin.Controllers
                     var objNailApi = _nailApiRepository.GetNailApiByID(objNail.NailApi_ID ?? 0);
                     if (!string.IsNullOrEmpty(objNailApi.Url) && objNailApi.Token != null)
                     {
-                        return Redirect(string.Format("{0}/Prices/Credit/{1}?token={2}&Cur_NailID={3}&Username={4}", objNailApi.Url, ID, objNailApi.Token.ToString(), intNailID, User.Identity.Name));
+                        var Token = new { Token = objNailApi.Token, Domain = objNail.Domain, TimeExpire = DateTime.Now.AddMinutes(5) };
+                        var jsonStringToken = JsonConvert.SerializeObject(Token);
+                        var strEncrypt = Sercurity.EncryptString(TokenKeyAPI, jsonStringToken);
+                        return Redirect(string.Format("{0}/Prices/Credit/{1}?token={2}&Cur_NailID={3}&Username={4}", objNailApi.Url, ID, strEncrypt, intNailID, User.Identity.Name));
                     }
                 }
 
@@ -131,6 +136,7 @@ namespace WebNails.Admin.Controllers
             }
         }
 
+        [Token]
         public ActionResult ApiCredit(int ID)
         {
             using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
@@ -141,6 +147,7 @@ namespace WebNails.Admin.Controllers
             }
         }
 
+        [Token]
         [HttpPost]
         public ActionResult ApiCredit(NailPrices item, string Cur_NailName, string Username)
         {

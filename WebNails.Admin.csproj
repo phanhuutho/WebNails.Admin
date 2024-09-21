@@ -196,6 +196,7 @@
     <Compile Include="Utilities\MailHelper.cs" />
     <Compile Include="Utilities\PagingHelper.cs" />
     <Compile Include="Utilities\Sercurity.cs" />
+    <Compile Include="Utilities\TokenAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-multiselect\bootstrap-multiselect.css" />
