@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace WebNails.Admin.Models
 {
@@ -31,5 +32,7 @@ namespace WebNails.Admin.Models
         public DateTime DateTimeCreate { get; set; }
         //
         public int? NailApi_ID { get; set; }
+        //
+        public List<SelectListItem> NailApis { get; set; }
     }
 }

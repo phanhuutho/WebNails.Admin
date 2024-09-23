@@ -21,6 +21,10 @@
                 <form id="myForm">
                     @Html.HiddenFor(model => model.ID)
                     @Html.HiddenFor(model => model.GUID)
+                    @if (Model.ID > 0)
+                    {
+                        @Html.HiddenFor(model => model.NailApi_ID)
+                    }
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -83,6 +87,14 @@
                                 @Html.EditorFor(model => model.LinkBookingAppointment, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(model => model.LinkBookingAppointment, "", new { @class = "text-danger" })
                             </div>
+                            @if (Model.ID == 0)
+                            {
+                                <div class="form-group">
+                                    @Html.Label("NailApi_ID", " Nail API")
+                                    @Html.DropDownListFor(model => model.NailApi_ID, Model.NailApis, "Select Nail API", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.NailApi_ID, "", new { @class = "text-danger" })
+                                </div>
+                            }
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">

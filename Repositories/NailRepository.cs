@@ -20,6 +20,12 @@ namespace WebNails.Admin.Repositories
             return objNail;
         }
 
+        public Nail GetNailByDomain(string Domain)
+        {
+            var objNail = this._sqlConnection.Query<Nail>(@"spNail_GetNailByDomain", new { strDomain = Domain }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(new Nail()).FirstOrDefault();
+            return objNail;
+        }
+
         public IEnumerable<Nail> GetNails(DynamicParameters param)
         {
             var objNails = this._sqlConnection.Query<Nail>(@"spNail_GetNails", param, commandType: CommandType.StoredProcedure);
@@ -56,7 +62,8 @@ namespace WebNails.Admin.Repositories
                         bitCoupons = item.Coupons,
                         strAboutUs = item.AboutUs,
                         strAboutUsHome = item.AboutUsHome,
-                        strBusinessHours = item.BusinessHours
+                        strBusinessHours = item.BusinessHours,
+                        intNailApiID = item.NailApi_ID
                     }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(0).FirstOrDefault();
             return intID;
         }

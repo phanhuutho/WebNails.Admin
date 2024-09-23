@@ -10,6 +10,7 @@ namespace WebNails.Admin.Interfaces
     public interface INailApiRepository : IConnection
     {
         NailApi GetNailApiByID(int ID);
+        NailApi GetNailApiByToken(Guid Token);
         List<NailApi> GetNails();
     }
 }

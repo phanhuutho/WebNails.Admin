@@ -17,6 +17,8 @@ namespace WebNails.Admin.Controllers
     public class CouponController : Controller
     {
         private readonly string TokenKeyAPI = ConfigurationManager.AppSettings["TokenKeyAPI"];
+        private readonly string SaltKeyAPI = ConfigurationManager.AppSettings["SaltKeyAPI"];
+        private readonly string VectorKeyAPI = ConfigurationManager.AppSettings["VectorKeyAPI"];
         private INailCouponRepository _nailCouponRepository;
         private INailRepository _nailRepository;
         private IActionDetailRepository _actionDetailRepository;
@@ -86,7 +88,7 @@ namespace WebNails.Admin.Controllers
                     {
                         var Token = new { Token = objNailApi.Token, Domain = objNail.Domain, TimeExpire = DateTime.Now.AddMinutes(5) };
                         var jsonStringToken = JsonConvert.SerializeObject(Token);
-                        var strEncrypt = Sercurity.EncryptString(TokenKeyAPI, jsonStringToken);
+                        var strEncrypt = Sercurity.EncryptToBase64(jsonStringToken, TokenKeyAPI, SaltKeyAPI, VectorKeyAPI);
                         return Redirect(string.Format("{0}/Coupon/Credit/{1}?token={2}&Cur_NailID={3}&Username={4}", objNailApi.Url, ID, strEncrypt, intNailID, User.Identity.Name));
                     }
                 }
@@ -137,8 +139,12 @@ namespace WebNails.Admin.Controllers
         }
 
         [Token]
-        public ActionResult ApiCredit(int ID)
+        public ActionResult ApiCredit(string token, int ID)
         {
+            if (string.IsNullOrEmpty(token))
+            {
+                return Content("Invalid Token");
+            }
             using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
                 _nailCouponRepository.InitConnection(sqlConnect);
@@ -149,8 +155,12 @@ namespace WebNails.Admin.Controllers
 
         [Token]
         [HttpPost]
-        public ActionResult ApiCredit(NailCoupon item, string Cur_NailName, string Username)
+        public ActionResult ApiCredit(NailCoupon item, string Cur_NailName, string Username, string token)
         {
+            if (string.IsNullOrEmpty(token))
+            {
+                return Content("Invalid Token");
+            }
             using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
                 _nailCouponRepository.InitConnection(sqlConnect);

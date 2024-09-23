@@ -11,6 +11,7 @@ namespace WebNails.Admin.Interfaces
     public interface INailRepository : IConnection
     {
         Nail GetNailByID(int ID);
+        Nail GetNailByDomain(string Domain);
         IEnumerable<Nail> GetNails(DynamicParameters param);
         List<Nail> GetNails();
         int SaveChange(Nail item);

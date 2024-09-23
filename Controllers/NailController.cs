@@ -20,6 +20,8 @@ namespace WebNails.Admin.Controllers
     public class NailController : Controller
     {
         private readonly string TokenKeyAPI = ConfigurationManager.AppSettings["TokenKeyAPI"];
+        private readonly string SaltKeyAPI = ConfigurationManager.AppSettings["SaltKeyAPI"];
+        private readonly string VectorKeyAPI = ConfigurationManager.AppSettings["VectorKeyAPI"];
         private INailRepository _nailRepository;
         private INailCouponRepository _nailCouponRepository;
         private INailPricesRepository _nailPricesRepository;
@@ -71,14 +73,14 @@ namespace WebNails.Admin.Controllers
         {
             using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
+                _nailApiRepository.InitConnection(sqlConnect);
                 if (ID == 0)
                 {
                     Session.Add("Cur_Domain", "Temp");
-                    return View(new Nail() { ID = 0, Name = "", GUID = Guid.NewGuid() });
+                    return View(new Nail() { ID = 0, Name = "", GUID = Guid.NewGuid(), NailApis = _nailApiRepository.GetNails().Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Url }).ToList() });
                 }
                 else
                 {
-                    _nailApiRepository.InitConnection(sqlConnect);
                     _nailRepository.InitConnection(sqlConnect);
                     var objNail = _nailRepository.GetNailByID(ID);
 
@@ -89,11 +91,11 @@ namespace WebNails.Admin.Controllers
                         {
                             var Token = new { Token = objNailApi.Token, Domain = objNail.Domain, TimeExpire = DateTime.Now.AddMinutes(5) };
                             var jsonStringToken = JsonConvert.SerializeObject(Token);
-                            var strEncrypt = Sercurity.EncryptString(TokenKeyAPI, jsonStringToken);
+                            var strEncrypt = Sercurity.EncryptToBase64(jsonStringToken, TokenKeyAPI, SaltKeyAPI, VectorKeyAPI);
                             return Redirect(string.Format("{0}/Nail/Credit/{1}?token={2}&Cur_NailID={3}&Username={4}", objNailApi.Url, ID, strEncrypt, objNail.ID, User.Identity.Name));
                         }
                     }
-
+                    objNail.NailApis = _nailApiRepository.GetNails().Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Url, Selected = x.ID == (objNail.NailApi_ID ?? 0) }).ToList();
                     Session.Add("Cur_Domain", objNail.Domain);
                     return View(objNail);
                 }
@@ -129,20 +131,30 @@ namespace WebNails.Admin.Controllers
         }
 
         [Token]
-        public ActionResult ApiCredit(int ID)
+        public ActionResult ApiCredit(int ID, string token)
         {
+            if (string.IsNullOrEmpty(token))
+            {
+                return Content("Invalid Token");
+            }
             using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
+                _nailApiRepository.InitConnection(sqlConnect);
                 _nailRepository.InitConnection(sqlConnect);
                 var objNail = _nailRepository.GetNailByID(ID);
+                objNail.NailApis = _nailApiRepository.GetNails().Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Url, Selected = x.ID == (objNail.NailApi_ID ?? 0) }).ToList();
                 return Json(objNail, JsonRequestBehavior.AllowGet);
             }
         }
 
         [Token]
         [HttpPost]
-        public ActionResult ApiCredit(Nail item, string Username)
+        public ActionResult ApiCredit(Nail item, string Username, string token)
         {
+            if (string.IsNullOrEmpty(token))
+            {
+                return Content("Invalid Token");
+            }
             using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
                 _nailRepository.InitConnection(sqlConnect);
@@ -219,7 +231,12 @@ namespace WebNails.Admin.Controllers
                         if (ApiDomain != null && ApiDomain.Token != null && !string.IsNullOrEmpty(ApiDomain.Url))
                         {
                             jsonInfo.Token = ApiDomain.Token.ToString();
-                            var urlSendData = string.Format("{0}/Nail/SyncDataWeb?token={1}&domain={2}", ApiDomain.Url, ApiDomain.Token.ToString(), objNail.Domain);
+
+                            var Token = new { Token = jsonInfo.Token, Domain = objNail.Domain, TimeExpire = DateTime.Now.AddMinutes(5) };
+                            var jsonStringToken = JsonConvert.SerializeObject(Token);
+                            var strEncrypt = Sercurity.EncryptToBase64(jsonStringToken, TokenKeyAPI, SaltKeyAPI, VectorKeyAPI);
+
+                            var urlSendData = string.Format("{0}/Nail/SyncDataWeb?token={1}&domain={2}", ApiDomain.Url, strEncrypt, objNail.Domain);
                             var dataJson = new
                             {
                                 jsonInfo,
