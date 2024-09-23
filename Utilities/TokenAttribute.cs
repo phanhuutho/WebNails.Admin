@@ -13,9 +13,9 @@ namespace WebNails.Admin.Utilities
 {
     public class TokenAttribute : ActionFilterAttribute
     {
-        private readonly string TokenKeyAPI = System.Configuration.ConfigurationManager.AppSettings["TokenKeyAPI"];
-        private readonly string SaltKeyAPI = System.Configuration.ConfigurationManager.AppSettings["SaltKeyAPI"];
-        private readonly string VectorKeyAPI = System.Configuration.ConfigurationManager.AppSettings["VectorKeyAPI"];
+        private readonly string TokenKeyAPI = ConfigurationManager.AppSettings["TokenKeyAPI"];
+        private readonly string SaltKeyAPI = ConfigurationManager.AppSettings["SaltKeyAPI"];
+        private readonly string VectorKeyAPI = ConfigurationManager.AppSettings["VectorKeyAPI"];
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (filterContext.HttpContext != null && !string.IsNullOrEmpty(filterContext.HttpContext.Request["token"]))
