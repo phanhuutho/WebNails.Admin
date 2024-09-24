@@ -35,14 +35,14 @@ namespace WebNails.Admin.Utilities
             }
         }
 
-        private bool CheckDomainInServer(string Domian)
+        private bool CheckDomainInServer(string Domain)
         {
             var result = false;
             var nailRepository = new NailRepository();
             using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
                 nailRepository.InitConnection(sqlConnect);
-                var objNail = nailRepository.GetNailByDomain(Domian);
+                var objNail = nailRepository.GetNailByDomain(Domain);
                 result = objNail != null && objNail.ID > 0;
             }    
             return result;
