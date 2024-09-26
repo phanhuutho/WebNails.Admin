@@ -293,9 +293,13 @@ namespace WebNails.Admin.Controllers
             using (var httpClient = new HttpClient())
             {
                 var response = await httpClient.PostAsync(url, requestContent);
-                response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadAsStringAsync();
-                return result;
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    response.EnsureSuccessStatusCode();
+                    var result = await response.Content.ReadAsStringAsync();
+                    return result;
+                }
+                return "";
             }
         }
     }
