@@ -13,5 +13,10 @@ namespace WebNails.Admin.Controllers
         {
             return RedirectToAction("Index", "ControlPanel");
         }
+
+        public ActionResult JsonEmpty()
+        {
+            return Json("");
+        }
     }
 }
