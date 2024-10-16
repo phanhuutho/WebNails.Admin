@@ -135,6 +135,51 @@
             location.href = strURL;
         }
 
+        function ItpOverlay(id) {
+
+            this.id = id;
+
+            this.show = function (id) {
+
+                if (id) {
+                    this.id = id;
+                }
+
+                // Gets the object of the body tag
+                var bgObj = document.getElementById(this.id);
+
+                // Adds a overlay
+                var oDiv = document.createElement('div');
+                oDiv.setAttribute('id', 'itp_overlay');
+                oDiv.setAttribute("class", "black_overlay");
+                oDiv.style.display = 'block';
+                bgObj.appendChild(oDiv);
+
+                // Adds loading
+                var lDiv = document.createElement('div');
+                lDiv.setAttribute('id', 'loading');
+                lDiv.setAttribute("class", "loading");
+                lDiv.style.display = 'block';
+                bgObj.appendChild(lDiv);
+
+            };
+
+            this.hide = function (id) {
+
+                if (id) {
+                    this.id = id;
+                }
+
+                var bgObj = document.getElementById(this.id);
+
+                var element = document.getElementById('loading');
+                bgObj.removeChild(element);
+
+                var element = document.getElementById('itp_overlay');
+                bgObj.removeChild(element);
+            };
+        }
+
         $(document).keydown(function (event) {
             if (event.keyCode == 123) { // Prevent F12
                 return false;
@@ -156,6 +201,9 @@
                         type: "POST",
                         url: "/Login/ConfirmLoginByCode",
                         data: $(form).serialize(),
+                        beforeSend: function () {
+                            overlay.show("body");
+                        },
                         success: function (result) {
                             if (result.IsLogin == false) {
                                 AlertMessage(result.Message);
@@ -164,6 +212,9 @@
                                 RedirecToUrl(result.ReturnUrl);
                             }
                         },
+                        complete: function () {
+                            overlay.hide("body");
+                        }
                     });
                     return false;
                 }
