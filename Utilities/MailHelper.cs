@@ -12,7 +12,7 @@ namespace WebNails.Admin.Utilities
     {
         public static void SendMail(string strEmailTo, string Subject, string Body, bool IsBug = true)
         {
-            using(MailMessage mail = new MailMessage(new MailAddress(ConfigurationManager.AppSettings["EmailSystem"], ConfigurationManager.AppSettings["EmailName"], System.Text.Encoding.UTF8), new MailAddress(strEmailTo)))
+            using (MailMessage mail = new MailMessage(new MailAddress(ConfigurationManager.AppSettings["EmailSystem"], ConfigurationManager.AppSettings["EmailName"], System.Text.Encoding.UTF8), new MailAddress(strEmailTo)))
             {
                 mail.HeadersEncoding = System.Text.Encoding.UTF8;
                 mail.SubjectEncoding = System.Text.Encoding.UTF8;

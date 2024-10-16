@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -27,12 +28,14 @@ namespace WebNails.Admin.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            var configIsForceLogin = ConfigurationManager.AppSettings["IsForceLogin"];
             ViewBag.ForceLogin = forcelogin;
+            ViewBag.IsForceLogin = configIsForceLogin;
             return View();
         }
 
         [HttpPost]
-        public ActionResult Index(LoginModel model, int forcelogin = 0)
+        public async Task<ActionResult> Index(LoginModel model, int forcelogin = 0)
         {
 
             var strMD5Password = Sercurity.Md5(model.Password);
@@ -40,17 +43,16 @@ namespace WebNails.Admin.Controllers
             {
                 var queryString = Request.UrlReferrer.Query;
 
-                var queryDictionary = HttpUtility.ParseQueryString(queryString);
-
                 _nailAccountRepository.InitConnection(sqlConnect);
 
                 var objAccount = _nailAccountRepository.GetNailAccount(model.Username, strMD5Password);
                 if (objAccount.ID != 0)
                 {
-                    if (forcelogin == 1)
+                    var configIsForceLogin = ConfigurationManager.AppSettings["IsForceLogin"];
+                    if (forcelogin == 1 && (!string.IsNullOrEmpty(configIsForceLogin) && configIsForceLogin == "1"))
                     {
                         var SessionRole = string.Format("{0}", Session["User_" + model.Username + "_Role"]);
-                        var ticket = new FormsAuthenticationTicket(1, model.Username, System.DateTime.Now, System.DateTime.Now.AddHours(1), true, SessionRole ?? "", FormsAuthentication.FormsCookiePath);
+                        var ticket = new FormsAuthenticationTicket(1, model.Username, DateTime.Now, DateTime.Now.AddHours(1), true, SessionRole ?? "", FormsAuthentication.FormsCookiePath);
                         var strEncrypt = FormsAuthentication.Encrypt(ticket);
                         var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, strEncrypt);
                         Response.Cookies.Add(cookie);
@@ -63,20 +65,14 @@ namespace WebNails.Admin.Controllers
                         Session["User_" + model.Username + "_ValidationCode"] = ValidationCode;
                         Session["User_" + model.Username + "_Email"] = objAccount.Email;
                         Session["User_" + model.Username + "_Role"] = objAccount.Role;
-                        MailHelper.SendMail(objAccount.Email, "Verify Code Login", "Access Code Login: " + ValidationCode);
-                        if (queryDictionary.Count > 0)
-                        {
-                            return Json(new { ReturnUrl = queryDictionary.Get("ReturnUrl"), IsLogin = true, Message = "", Username = model.Username, ValidationCode = Sercurity.Md5(ValidationCode) }, JsonRequestBehavior.AllowGet);
-                        }
-                        else
-                        {
-                            return Json(new { ReturnUrl = "/ControlPanel/Index", IsLogin = true, Message = "", Username = model.Username, ValidationCode = Sercurity.Md5(ValidationCode) }, JsonRequestBehavior.AllowGet);
-                        }
+                        await Task.Run(() => MailHelper.SendMail(objAccount.Email, "Verify Code Login", "Access Code Login: " + ValidationCode));
+
+                        return Json(new { ReturnUrl = "/ControlPanel/Index", IsLogin = true, Message = "", Username = model.Username, ValidationCode = Sercurity.Md5(ValidationCode) }, JsonRequestBehavior.AllowGet);
                     }
                 }
                 else
                 {
-                    return Json(new { ReturnUrl = queryDictionary.Get("ReturnUrl"), IsLogin = false, Message = "Thông tin đăng nhập không chính xác" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { ReturnUrl = "", IsLogin = false, Message = "Thông tin đăng nhập không chính xác" }, JsonRequestBehavior.AllowGet);
                 }
             }
         }
@@ -91,8 +87,6 @@ namespace WebNails.Admin.Controllers
         public ActionResult ConfirmLoginByCode(LoginModel model)
         {
             var queryString = Request.UrlReferrer.Query;
-
-            var queryDictionary = HttpUtility.ParseQueryString(queryString);
 
             if (Session["User_" + model.Username + "_ValidationCode"] != null)
             {
@@ -109,23 +103,17 @@ namespace WebNails.Admin.Controllers
                     Session.Remove("User_" + model.Username + "_ValidationCode");
                     Session.Remove("User_" + model.Username + "_Email");
                     Session.Remove("User_" + model.Username + "_Role");
-                    if (queryDictionary.Count > 0)
-                    {
-                        return Json(new { ReturnUrl = queryDictionary.Get("ReturnUrl"), IsLogin = true, Message = "" }, JsonRequestBehavior.AllowGet);
-                    }
-                    else
-                    {
-                        return Json(new { ReturnUrl = "/ControlPanel/Index", IsLogin = true, Message = "" }, JsonRequestBehavior.AllowGet);
-                    }
+
+                    return Json(new { ReturnUrl = "/ControlPanel/Index", IsLogin = true, Message = "" }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json(new { ReturnUrl = queryDictionary.Get("ReturnUrl"), IsLogin = false, Message = "Mã xác nhận không chính xác" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { ReturnUrl = "", IsLogin = false, Message = "Mã xác nhận không chính xác" }, JsonRequestBehavior.AllowGet);
                 }
             }
             else
             {
-                return Json(new { ReturnUrl = queryDictionary.Get("ReturnUrl"), IsLogin = false, Message = "Mã xác nhận đã quá hạn." }, JsonRequestBehavior.AllowGet);
+                return Json(new { ReturnUrl = "", IsLogin = false, Message = "Mã xác nhận đã quá hạn." }, JsonRequestBehavior.AllowGet);
             }
         }
 

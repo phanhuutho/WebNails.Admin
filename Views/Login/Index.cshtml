@@ -2,6 +2,7 @@
 @{
     Layout = null;
     int forcelogin = (int)ViewBag.ForceLogin;
+    string configIsForceLogin = (string)ViewBag.IsForceLogin;
 }
 
 <!DOCTYPE html>
@@ -130,6 +131,7 @@
 
     <script type="text/javascript">
         var forcelogin = parseInt('@forcelogin');
+        var configIsForceLogin = '@configIsForceLogin';
 
         function AlertMessage(strMessage) {
             $('#alert-message').html("");
@@ -139,6 +141,51 @@
 
         function RedirecToUrl(strURL) {
             location.href = strURL;
+        }
+
+        function ItpOverlay(id) {
+
+            this.id = id;
+
+            this.show = function (id) {
+
+                if (id) {
+                    this.id = id;
+                }
+
+                // Gets the object of the body tag
+                var bgObj = document.getElementById(this.id);
+
+                // Adds a overlay
+                var oDiv = document.createElement('div');
+                oDiv.setAttribute('id', 'itp_overlay');
+                oDiv.setAttribute("class", "black_overlay");
+                oDiv.style.display = 'block';
+                bgObj.appendChild(oDiv);
+
+                // Adds loading
+                var lDiv = document.createElement('div');
+                lDiv.setAttribute('id', 'loading');
+                lDiv.setAttribute("class", "loading");
+                lDiv.style.display = 'block';
+                bgObj.appendChild(lDiv);
+
+            };
+
+            this.hide = function (id) {
+
+                if (id) {
+                    this.id = id;
+                }
+
+                var bgObj = document.getElementById(this.id);
+
+                var element = document.getElementById('loading');
+                bgObj.removeChild(element);
+
+                var element = document.getElementById('itp_overlay');
+                bgObj.removeChild(element);
+            };
         }
 
         $(document).keydown(function (event) {
@@ -160,22 +207,29 @@
                     Password: { required: "Nhập mật khẩu" }
                 },
                 submitHandler: function (form) {
+                    let overlay = new ItpOverlay();
                     $.ajax({
                         type: "POST",
                         url: "/Login/Index",
                         data: $(form).serialize(),
+                        beforeSend: function () {
+                            overlay.show("body");
+                        },
                         success: function (result) {
                             if (result.IsLogin == false) {
                                 AlertMessage(result.Message);
                             }
                             else {
                                 var UrlRedirect = '/Login/ConfirmLoginByCode?Username=' + result.Username + '&ValidationCode=' + result.ValidationCode + "&ReturnUrl=" + result.ReturnUrl;
-                                if (forcelogin == 1) {
+                                if (forcelogin == 1 && configIsForceLogin == "1") {
                                     UrlRedirect = result.ReturnUrl;
                                 }
                                 RedirecToUrl(UrlRedirect);
                             }
                         },
+                        complete: function () {
+                            overlay.hide("body");
+                        }
                     });
                     return false;
                 }
