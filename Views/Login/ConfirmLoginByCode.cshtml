@@ -197,6 +197,7 @@
                     Code: { required: "Nhập mã xác nhận đã được gửi qua email" }
                 },
                 submitHandler: function (form) {
+                    let overlay = new ItpOverlay();
                     $.ajax({
                         type: "POST",
                         url: "/Login/ConfirmLoginByCode",
