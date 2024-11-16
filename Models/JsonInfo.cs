@@ -25,5 +25,8 @@ namespace WebNails.Admin.Models
         public JsonSocial Twitter { get; set; }
         public JsonSocial Youtube { get; set; }
         public string Token { get; set; }
+        public int SalesOff { get; set; }
+        public int FeePaypal { get; set; }
+        public bool IsBuyerFeePaypal { get; set; }
     }
 }
