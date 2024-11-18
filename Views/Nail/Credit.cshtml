@@ -87,6 +87,21 @@
                                 @Html.EditorFor(model => model.LinkBookingAppointment, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(model => model.LinkBookingAppointment, "", new { @class = "text-danger" })
                             </div>
+                            <div class="form-group">
+                                @Html.Label("SalesOff", "Sale Off")
+                                @Html.EditorFor(model => model.SalesOff, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.SalesOff, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("FeePaypal", "Fee Paypal")
+                                @Html.EditorFor(model => model.FeePaypal, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.FeePaypal, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("IsBuyerFeePaypal", "Người mua chịu phí Paypal")
+                                @Html.CheckBoxFor(model => model.IsBuyerFeePaypal, new { @class = "checkbox-inline" })
+                                @Html.ValidationMessageFor(model => model.IsBuyerFeePaypal, "", new { @class = "text-danger" })
+                            </div>
                             @if (Model.ID == 0)
                             {
                                 <div class="form-group">

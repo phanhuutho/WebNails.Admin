@@ -63,7 +63,10 @@ namespace WebNails.Admin.Repositories
                         strAboutUs = item.AboutUs,
                         strAboutUsHome = item.AboutUsHome,
                         strBusinessHours = item.BusinessHours,
-                        intNailApiID = item.NailApi_ID
+                        intNailApiID = item.NailApi_ID,
+                        intSalesOff = item.SalesOff,
+                        intFeePaypal = item.FeePaypal,
+                        bitIsBuyerFeePaypal = item.IsBuyerFeePaypal
                     }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(0).FirstOrDefault();
             return intID;
         }

@@ -77,7 +77,7 @@ namespace WebNails.Admin.Controllers
                 if (ID == 0)
                 {
                     Session.Add("Cur_Domain", "Temp");
-                    return View(new Nail() { ID = 0, Name = "", GUID = Guid.NewGuid(), NailApis = _nailApiRepository.GetNails().Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Url }).ToList() });
+                    return View(new Nail() { ID = 0, Name = "", GUID = Guid.NewGuid(), NailApis = _nailApiRepository.GetNails().Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Url }).ToList(), FeePaypal = 0, SalesOff = 0, IsBuyerFeePaypal = false });
                 }
                 else
                 {
@@ -142,6 +142,9 @@ namespace WebNails.Admin.Controllers
                 _nailApiRepository.InitConnection(sqlConnect);
                 _nailRepository.InitConnection(sqlConnect);
                 var objNail = _nailRepository.GetNailByID(ID);
+                objNail.FeePaypal = 0;
+                objNail.SalesOff = 0;
+                objNail.IsBuyerFeePaypal = false;
                 objNail.NailApis = _nailApiRepository.GetNails().Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Url, Selected = x.ID == (objNail.NailApi_ID ?? 0) }).ToList();
                 return Json(objNail, JsonRequestBehavior.AllowGet);
             }
