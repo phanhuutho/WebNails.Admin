@@ -224,7 +224,10 @@ namespace WebNails.Admin.Controllers
                         Instagram = objNailSocial.Where(x => x.Title == "Instagram").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault(),
                         Twitter = objNailSocial.Where(x => x.Title == "Twitter").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault(),
                         Youtube = objNailSocial.Where(x => x.Title == "Youtube").DefaultIfEmpty(new Social()).Select(x => new JsonSocial { BackgroundColor = x.BackgroundColor, ClassIcon = x.ClassIcon, Title = x.Title, Position = x.Position, Url = x.URL ?? "" }).FirstOrDefault(),
-                        Token = ""
+                        Token = "", 
+                        SalesOff = objNail.SalesOff,
+                        FeePaypal = objNail.FeePaypal,
+                        IsBuyerFeePaypal = objNail.IsBuyerFeePaypal
                     };
                     
                     if (objNail.NailApi_ID != null && objNail.NailApi_ID > 0)
