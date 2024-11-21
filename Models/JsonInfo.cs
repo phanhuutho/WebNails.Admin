@@ -28,5 +28,6 @@ namespace WebNails.Admin.Models
         public int SalesOff { get; set; }
         public int FeePaypal { get; set; }
         public bool IsBuyerFeePaypal { get; set; }
+        public int AmountMinimum { get; set; }
     }
 }
