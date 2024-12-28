@@ -29,7 +29,8 @@ namespace WebNails.Admin.Controllers
         private IActionDetailRepository _actionDetailRepository;
         private INailAccountRepository _nailAccountRepository;
         private INailApiRepository _nailApiRepository;
-        public NailController(INailRepository nailRepository, INailCouponRepository nailCouponRepository, INailPricesRepository nailPricesRepository, ISocialRepository socialRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository, INailApiRepository nailApiRepository)
+        private INailCodeSaleRepository _nailCodeSaleRepository;
+        public NailController(INailRepository nailRepository, INailCouponRepository nailCouponRepository, INailPricesRepository nailPricesRepository, ISocialRepository socialRepository, IActionDetailRepository actionDetailRepository, INailAccountRepository nailAccountRepository, INailApiRepository nailApiRepository, INailCodeSaleRepository nailCodeSaleRepository)
         {
             _nailRepository = nailRepository;
             _nailCouponRepository = nailCouponRepository;
@@ -38,6 +39,7 @@ namespace WebNails.Admin.Controllers
             _actionDetailRepository = actionDetailRepository;
             _nailAccountRepository = nailAccountRepository;
             _nailApiRepository = nailApiRepository;
+            _nailCodeSaleRepository = nailCodeSaleRepository;
         }
 
         // GET: Nail
@@ -202,6 +204,9 @@ namespace WebNails.Admin.Controllers
                     _socialRepository.InitConnection(sqlConnect);
                     var objNailSocial = _socialRepository.GetSocialMappingNailSocialByNailID(ID);
 
+                    _nailCodeSaleRepository.InitConnection(sqlConnect);
+                    var objNailCodeSale = _nailCodeSaleRepository.GetListNailCodeSaleByDomain(objNail.Domain);
+
                     var jsonInfo = new JsonInfo
                     {
                         Name = objNail.Name ?? "",
@@ -225,7 +230,9 @@ namespace WebNails.Admin.Controllers
                         SalesOff = objNail.SalesOff,
                         FeePaypal = objNail.FeePaypal,
                         IsBuyerFeePaypal = objNail.IsBuyerFeePaypal,
-                        AmountMinimum = objNail.AmountMinimum
+                        AmountMinimum = objNail.AmountMinimum, 
+                        AutoSaleOffCode = objNail.AutoSaleOffCode,
+                        CodeSale = objNailCodeSale
                     };
                     
                     if (objNail.NailApi_ID != null && objNail.NailApi_ID > 0)

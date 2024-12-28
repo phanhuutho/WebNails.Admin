@@ -12,6 +12,7 @@ namespace WebNails.Admin.Interfaces
     {
         int DeleteNailCodeSale(int ID);
         NailCodeSale GetNailCodeSaleByID(int ID);
+        List<NailCodeSale> GetListNailCodeSaleByDomain(string Domain);
         IEnumerable<NailCodeSale> GetNailCodeSales(DynamicParameters param);
         int SaveChange(NailCodeSale item);
     }

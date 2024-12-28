@@ -25,6 +25,12 @@ namespace WebNails.Admin.Repositories
             return objNailCodeSale;
         }
 
+        public List<NailCodeSale> GetListNailCodeSaleByDomain(string Domain)
+        {
+            var objNailCodeSale = this._sqlConnection.Query<NailCodeSale>("spNailCodeSale_GetNailCodeSalesByDomain", new { @strDomain = Domain }, commandType: CommandType.StoredProcedure).ToList();
+            return objNailCodeSale;
+        }
+
         public IEnumerable<NailCodeSale> GetNailCodeSales(DynamicParameters param)
         {
             var objNailCodeSales = this._sqlConnection.Query<NailCodeSale>(@"spNailCodeSale_GetNailCodeSales", param, commandType: CommandType.StoredProcedure);

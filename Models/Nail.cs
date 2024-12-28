@@ -28,19 +28,13 @@ namespace WebNails.Admin.Models
         public string AboutUsHome { get; set; }
         [DataType(DataType.MultilineText)]
         public string BusinessHours { get; set; }
-        //
         public DateTime DateTimeCreate { get; set; }
-        //
         public int? NailApi_ID { get; set; }
-        //
         public List<SelectListItem> NailApis { get; set; }
-        //
         public int SalesOff { get; set; }
-        //
         public int FeePaypal { get; set; }
-        //
         public bool IsBuyerFeePaypal { get; set; }
-        //
         public int AmountMinimum { get; set; }
+        public bool AutoSaleOffCode { get; set; }
     }
 }
