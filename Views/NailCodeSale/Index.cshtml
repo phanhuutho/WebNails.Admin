@@ -5,6 +5,7 @@
     ViewBag.Title = "Danh sách Code Sale";
 
     var indexCurrent = WebNails.Admin.Utilities.PagingHelper.CurrentIndex(WebNails.Admin.Utilities.PagingHelper.CountSort, WebNails.Admin.Utilities.PagingHelper.PageIndex);
+    var NailID = (int)(ViewBag.NailID ?? '0');
 }
 
 <div class="row">
@@ -16,7 +17,7 @@
                         <h5>Danh sách Code Sale</h5>
                     </div>
                     <div class="col-xs-6 text-right">
-                        <a class="btn btn-default" href="/NailCodeSale/Credit">Thêm mới</a>
+                        <a class="btn btn-default" href="/NailCodeSale/Credit@(NailID > 0 ? "?Nail_ID=" + NailID : "")">Thêm mới</a>
                     </div>
                 </div>
             </div>
@@ -97,7 +98,7 @@
                         overlay.show("body");
                     },
                     success: function (result) {
-                        $.get("/NailCodeSale/GetTable", function (htmlResponse)
+                        $.get("/NailCodeSale/GetTable@(NailID > 0 ? "?Nail_ID=" + NailID : "")", function (htmlResponse)
                         {
                             $(".panel-body").html("").append(htmlResponse);
                         });

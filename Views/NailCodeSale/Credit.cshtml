@@ -3,6 +3,7 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = $"{(Model.ID == 0 ? "Thêm" : "Sửa")} Code Sale";
+    var NailID = Model.Nail_ID;
 }
 
 @section css{
@@ -75,6 +76,11 @@
     <script src="~/Scripts/jquery/jquery.validate.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            @if(NailID > 0)
+            {
+                @:$("#Nail_ID").val('@NailID');
+            }        
+
             $("#myForm").validate({
                 rules: {
                     Code: "required",

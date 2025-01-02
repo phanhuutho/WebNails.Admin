@@ -41,19 +41,20 @@ namespace WebNails.Admin.Controllers
                 var objResult = _nailNailCodeSaleRepository.GetNailCodeSales(param);
 
                 ViewBag.Count = param.Get<int>("@intTotalRecord");
+                ViewBag.NailID = Nail_ID;
 
                 return View(objResult);
             }
         }
         [Authorize]
-        public ActionResult Credit(int ID = 0)
+        public ActionResult Credit(int ID = 0, int Nail_ID = 0)
         {
             using (var sqlConnect = new SqlConnection(ConfigurationManager.ConnectionStrings["ContextDatabase"].ConnectionString))
             {
                 _nailRepository.InitConnection(sqlConnect);
                 if (ID == 0)
                 {
-                    return View(new NailCodeSale() { ID = 0, ExpireDateFrom = DateTime.Now.AddDays(1), ExpireDateTo = DateTime.Now.AddDays(2), Nails = _nailRepository.GetNails().Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Domain }).OrderBy(x => x.Text).ToList() });
+                    return View(new NailCodeSale() { ID = 0, Nail_ID = Nail_ID, ExpireDateFrom = DateTime.Now.AddDays(1), ExpireDateTo = DateTime.Now.AddDays(2), Nails = _nailRepository.GetNails().Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Domain }).OrderBy(x => x.Text).ToList() });
                 }
                 else
                 {

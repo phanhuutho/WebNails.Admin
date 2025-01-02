@@ -67,7 +67,8 @@ namespace WebNails.Admin.Repositories
                         intSalesOff = item.SalesOff,
                         intFeePaypal = item.FeePaypal,
                         bitIsBuyerFeePaypal = item.IsBuyerFeePaypal,
-                        intAmountMinimum = item.AmountMinimum
+                        intAmountMinimum = item.AmountMinimum,
+                        bitAutoSaleOffCode = item.AutoSaleOffCode
                     }, commandType: CommandType.StoredProcedure).DefaultIfEmpty(0).FirstOrDefault();
             return intID;
         }
